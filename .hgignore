@@ -1,0 +1,15 @@
+glob:*.pro.user
+glob:*-build-*
+glob:*.rss
+glob:*.pkg
+glob:*.loc
+glob:*.sis
+glob:*.deb
+glob:*.changes
+glob:debian/*
+glob:bld.inf
+glob:.make.cache
+glob:*.mmp
+glob:moc_*
+glob:*.o
+glob:Makefile

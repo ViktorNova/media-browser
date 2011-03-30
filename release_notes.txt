@@ -1,0 +1,102 @@
+QML Media Browser
+===================
+
+TODO
+
+FILES
+-------------------------------------------------------------------------------
+
+design/*
+
+- UI design files
+
+code/*
+
+- The application itself. Contains a .pro-file that can be opened in Qt SDK 1.1beta.
+
+screenhots/*
+
+- Screenshots for the wiki page
+
+  
+INSTALLATION INSTRUCTIONS
+-------------------------------------------------------------------------------
+
+Mobile device (Symbian^3)
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There are two ways to install the application on the device.
+
+0. The Qt libraries (4.7.2 or higher) must be installed. See the section 
+   COMPATIBILITY for more information about the installation.
+
+1. a) Drag the restaurantapp_1.0.0.sis file to the Nokia Ovi Suite when the device is 
+      connected with the USB cable.
+   
+   OR
+   
+   b) Send the application directly to the Messaging Inbox (for example,
+      through Bluetooth).
+
+2. After the installation is complete, return to the Application menu and
+   select the Applications folder.
+   
+3. Locate the RestaurantApp icon and select it to launch the application.
+
+
+Maemo device
+~~~~~~~~~~~~
+
+Mobile device (Maemo)
+~~~~~~~~~~~~~~~~~~~~~
+0. The Qt libraries (4.7.0 or higher) must be installed. See the section 
+   COMPATIBILITY for more information about the installation.
+
+1. Copy the restaurantapp_1.0.0_armel.deb file into a specific folder on the 
+   device (for example, 'MyDocs').
+
+2. Start XTerm. Type 'sudo gainroot' to get root access.
+
+3. 'cd' to the directory to which you copied the package 
+   (for example, 'cd MyDocs').
+
+4. As root, install the package:
+   dpkg -i restaurantapp_1.0.0_armel.deb
+
+5. Launch the Applications menu.
+
+6. Locate the RestaurantApp icon and select it to launch the application.
+
+
+COMPATIBILITY
+-------------------------------------------------------------------------------
+
+- Symbian^3 with Qt version 4.7.2 or higher.
+
+  1. Download Qt for Symbian (4.7.2 or higher) from qt.nokia.com.
+  
+  2. Drag qt_installer.sis on top of the device in Nokia Ovi Suite while the 
+     device is connected. The SIS package is found in the installation folder 
+     of Qt for Symbian (4.7.2 or higher).
+     
+     
+- Maemo with PR1.3 which includes Qt 4.7.0.
+
+  1. Use Nokia Ovi Suite to update the device's firmware to PR1.3.
+
+  
+   
+Tested on:
+
+- Nokia N8-00
+- Nokia E7-00
+- Nokia N900
+
+Developed with:
+
+-QtSDK 1.1beta
+
+
+VERSION HISTORY
+-------------------------------------------------------------------------------
+v0.1.7 Initial version published in Forum Nokia Projects.
