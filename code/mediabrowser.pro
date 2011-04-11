@@ -10,6 +10,7 @@ symbian:TARGET.UID3 = 0xE487F346
 
 # Allow network access on Symbian
 symbian:TARGET.CAPABILITY += NetworkServices
+symbian:TARGET.EPOCHEAPSIZE = 0x20000 0x4000000
 
 # Define QMLJSDEBUGGER to allow debugging of QML in debug builds
 # (This might significantly increase build time)

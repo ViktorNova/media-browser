@@ -9,16 +9,17 @@ Rectangle {
     DocumentGalleryModel {
         id: galleryModel
         rootType: DocumentGallery.Image
+        scope: DocumentGallery.Image
         properties: [ "url" ]
-        limit: 30
-        //filter: filter
+        limit: 10
+        autoUpdate: false
+        onProgressChanged: console.log("Progress: " + progress)
     }
 
     CoverFlow {
         id: coverFlow
         anchors {
             fill: parent
-//            topMargin: 60
         }
 
         model: galleryModel

@@ -26,8 +26,9 @@ Rectangle {
         preferredHighlightEnd: 0.5
         focus: true
         interactive: true
+        smooth: true
         pathItemCount: 7
-    }
+   }
 
     Path {
         id: coverFlowPath
@@ -66,6 +67,9 @@ Rectangle {
                 source: url
                 fillMode: Image.PreserveAspectFit
                 asynchronous: true
+                sourceSize.width: width
+//                sourceSize.height: height
+                onStateChanged: console.log("Image status: " + status)
             }
             transform: Rotation {
                 origin.x: delegateImage.width/2; origin.y: delegateImage.height/2
