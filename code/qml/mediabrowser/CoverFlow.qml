@@ -16,6 +16,7 @@ Rectangle {
 
     Component.onCompleted: {
         console.log("Model has " + model.count + " images");
+        pathView.currentIndex = 0;
     }
 
     PathView {
@@ -28,8 +29,20 @@ Rectangle {
         preferredHighlightEnd: 0.5
         focus: true
         interactive: true
-        smooth: true
+//        smooth: true
         pathItemCount: 7
+
+        Keys.onRightPressed: {
+            if (interactive) { // && !moving) {
+                incrementCurrentIndex()
+            }
+        }
+        Keys.onLeftPressed: {
+            if (interactive) { // && !moving) {
+                decrementCurrentIndex()
+            }
+        }
+
         onCurrentIndexChanged: container.currentIndexChanged(pathView.currentIndex);
     }
 
