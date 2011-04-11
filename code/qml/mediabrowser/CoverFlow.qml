@@ -5,8 +5,8 @@ Rectangle {
     id: container
 
     property DocumentGalleryModel model
-    property int topMargin: 10
-    property int bottomMargin: 20
+    property int topMargin: 80
+    property int bottomMargin: 80
 
     width: 640
     height: 360
@@ -28,7 +28,7 @@ Rectangle {
         interactive: true
         smooth: true
         pathItemCount: 7
-   }
+    }
 
     Path {
         id: coverFlowPath
@@ -68,21 +68,22 @@ Rectangle {
             y: container.topMargin
             x: 0
             z: PathView.z
-            width: 200
+            width: delegateItem.height
             height: container.height - container.topMargin - container.bottomMargin
             scale: PathView.iconScale
             color: "blue"
             radius: 10
             Image {
-                anchors.centerIn: parent
-                width: parent.width - 20
-                height: parent.height - 20
+                clip: true
                 id: delegateImage
+                anchors.centerIn: parent
+                width: delegateImage.height
+                height: parent.height - 20
                 source: url
-                fillMode: Image.PreserveAspectFit
+                fillMode: Image.PreserveAspectCrop
                 asynchronous: true
                 // Only set sourceSize.width or height to maintain aspect ratio
-                sourceSize.width: width
+                sourceSize.width: delegateImage.width
             }
             transform: Rotation {
                 origin.x: delegateImage.width/2; origin.y: delegateImage.height/2
