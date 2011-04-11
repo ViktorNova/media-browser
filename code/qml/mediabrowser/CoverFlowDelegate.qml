@@ -16,7 +16,7 @@ Rectangle {
         anchors.centerIn: parent
         width: delegateImage.height
         height: parent.height - 20
-        source: url
+        source: if (!pathView.moving) { url } else { "gfx/image_placeholder.png"}
         fillMode: Image.PreserveAspectCrop
         asynchronous: true
         // Only set sourceSize.width or height to maintain aspect ratio
