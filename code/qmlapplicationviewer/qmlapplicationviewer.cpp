@@ -149,7 +149,7 @@ void QmlApplicationViewer::showExpanded()
     showFullScreen();
 #elif defined(Q_WS_MAEMO_5) || defined(Q_WS_MAEMO_6)
     showMaximized();
-#else
-    show();
+#elif defined(QT_SIMULATOR)
+    showFullScreen();
 #endif
 }
