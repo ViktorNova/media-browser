@@ -13,7 +13,8 @@ Rectangle {
         properties: [ "url" ]
         limit: 10
         autoUpdate: false
-        onProgressChanged: console.log("Progress: " + progress)
+        onProgressChanged: console.log("Model progress: " + progress)
+        onStatusChanged: console.log("Model status: " + status)
     }
 
     CoverFlow {
@@ -23,6 +24,8 @@ Rectangle {
         }
 
         model: galleryModel
+
+        onCurrentIndexChanged: console.log("Current index: " + index)
     }
 
     Button {
