@@ -1,16 +1,27 @@
 import QtQuick 1.0
+import QtMobility.gallery 1.1
 
 Rectangle {
     width: 640
     height: 360
     color: "lightsteelblue"
 
+    DocumentGalleryModel {
+        id: galleryModel
+        rootType: DocumentGallery.Image
+        properties: [ "url" ]
+        limit: 30
+        //filter: filter
+    }
+
     CoverFlow {
         id: coverFlow
         anchors {
             fill: parent
-            topMargin: 80
+            topMargin: 60
         }
+
+        model: galleryModel
     }
 
     Button {
@@ -23,8 +34,8 @@ Rectangle {
         text: "X"
         fontBold: true
 
-        width: 60
-        height: 60
+        width: 40
+        height: 40
 
         onClicked: Qt.quit();
     }
