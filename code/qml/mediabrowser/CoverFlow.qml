@@ -36,15 +36,29 @@ Rectangle {
         startY: coverFlow.height / 2
         PathAttribute { name: "z"; value: 0 }
         PathAttribute { name: "angle"; value: 90 }
-        PathAttribute { name: "iconScale"; value: 0.5 }
+        PathAttribute { name: "iconScale"; value: 0.4 }
+
+        // First stop
+        PathLine { x: coverFlow.width / 8; y: coverFlow.height / 2;  }
+        PathAttribute { name: "z"; value: 50 }
+        PathAttribute { name: "angle"; value: 45 }
+        PathAttribute { name: "iconScale"; value: 0.8 }
+
+        // Middle
         PathLine { x: coverFlow.width / 2; y: coverFlow.height / 2;  }
         PathAttribute { name: "z"; value: 100 }
         PathAttribute { name: "angle"; value: 0 }
         PathAttribute { name: "iconScale"; value: 1.0 }
+
+        PathLine { x: coverFlow.width/8*7; y: coverFlow.height / 2; }
+        PathAttribute { name: "z"; value: 50 }
+        PathAttribute { name: "angle"; value: -45 }
+        PathAttribute { name: "iconScale"; value: 0.8 }
+
         PathLine { x: coverFlow.width; y: coverFlow.height / 2; }
         PathAttribute { name: "z"; value: 0 }
         PathAttribute { name: "angle"; value: -90 }
-        PathAttribute { name: "iconScale"; value: 0.5 }
+        PathAttribute { name: "iconScale"; value: 0.4 }
     }
 
     Component {
