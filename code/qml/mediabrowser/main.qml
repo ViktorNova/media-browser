@@ -12,7 +12,7 @@ Rectangle {
         scope: DocumentGallery.Image
         properties: [ "url" ]
         limit: 10
-        autoUpdate: false
+        autoUpdate: true
         onProgressChanged: console.log("Model progress: " + progress)
         onStatusChanged: console.log("Model status: " + status)
     }

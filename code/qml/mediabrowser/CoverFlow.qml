@@ -21,6 +21,8 @@ Rectangle {
 
     PathView {
         id: pathView
+        property bool still: true
+
         model: container.model
         delegate: CoverFlowDelegate {}
         anchors.fill: parent
@@ -29,21 +31,33 @@ Rectangle {
         preferredHighlightEnd: 0.5
         focus: true
         interactive: true
-//        smooth: true
         pathItemCount: 7
+
+        onMovementStarted: {
+            pathView.still = false;
+            console.log("PathView movement started")
+        }
+
+        onMovementEnded: {
+            pathView.still = true;
+            console.log("PathView movement ended")
+        }
 
         Keys.onRightPressed: {
             if (interactive) { // && !moving) {
                 incrementCurrentIndex()
             }
         }
+
         Keys.onLeftPressed: {
             if (interactive) { // && !moving) {
                 decrementCurrentIndex()
             }
         }
 
-        onCurrentIndexChanged: container.currentIndexChanged(pathView.currentIndex);
+        onCurrentIndexChanged: {
+            container.currentIndexChanged(pathView.currentIndex);
+        }
     }
 
     Path {
