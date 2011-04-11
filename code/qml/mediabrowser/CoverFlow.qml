@@ -35,16 +35,16 @@ Rectangle {
         startX: 0
         startY: coverFlow.height / 2
         PathAttribute { name: "z"; value: 0 }
-        PathAttribute { name: "angle"; value: 80 }
-        PathAttribute { name: "iconScale"; value: 0.3 }
+        PathAttribute { name: "angle"; value: 90 }
+        PathAttribute { name: "iconScale"; value: 0.5 }
         PathLine { x: coverFlow.width / 2; y: coverFlow.height / 2;  }
         PathAttribute { name: "z"; value: 100 }
         PathAttribute { name: "angle"; value: 0 }
         PathAttribute { name: "iconScale"; value: 1.0 }
         PathLine { x: coverFlow.width; y: coverFlow.height / 2; }
         PathAttribute { name: "z"; value: 0 }
-        PathAttribute { name: "angle"; value: -80 }
-        PathAttribute { name: "iconScale"; value: 0.3 }
+        PathAttribute { name: "angle"; value: -90 }
+        PathAttribute { name: "iconScale"; value: 0.5 }
     }
 
     Component {
@@ -61,15 +61,14 @@ Rectangle {
             radius: 10
             Image {
                 anchors.centerIn: parent
-                width: parent.width -100
+                width: parent.width - 20
                 height: parent.height - 20
                 id: delegateImage
                 source: url
                 fillMode: Image.PreserveAspectFit
                 asynchronous: true
+                // Only set sourceSize.width or height to maintain aspect ratio
                 sourceSize.width: width
-//                sourceSize.height: height
-                onStateChanged: console.log("Image status: " + status)
             }
             transform: Rotation {
                 origin.x: delegateImage.width/2; origin.y: delegateImage.height/2
