@@ -4,13 +4,19 @@ folder_01.target = qml
 DEPLOYMENTFOLDERS = folder_01
 
 # Additional import path used to resolve QML modules in Creator's code model
-QML_IMPORT_PATH =
+QML_IMPORT_PATH = /opt/qtm11/imports
 
 symbian:TARGET.UID3 = 0xE487F346
 
 # Allow network access on Symbian
 symbian:TARGET.CAPABILITY += NetworkServices
 symbian:TARGET.EPOCHEAPSIZE = 0x20000 0x4000000
+
+#maemo5:QMAKE_LFLAGS += -Wl,-rpath,/opt/qtm11/lib
+maemo5:QMAKE_LFLAGS += -Wl
+maemo5:QMAKE_LFLAGS_RPATH += /opt/qtm11/lib
+maemo5:QMAKE_LFLAGS_RPATH += /opt/qtm11/imports
+maemo5:QML_IMPORT_PATH = /opt/qtm11/imports
 
 # Define QMLJSDEBUGGER to allow debugging of QML in debug builds
 # (This might significantly increase build time)
