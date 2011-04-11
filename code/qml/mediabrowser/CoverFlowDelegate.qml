@@ -33,8 +33,14 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            console.log("Clicked on item at index " + index)
-            pathView.currentIndex = index;
+            if (pathView.currentIndex == index) {
+                console.log("Clicked on current item, zoom it")
+                //TODO real states with transitions and animations
+                delegateItem.scale = 1.5
+            } else {
+                console.log("Clicked on item at index " + index)
+                pathView.currentIndex = index;
+            }
         }
     }
 
