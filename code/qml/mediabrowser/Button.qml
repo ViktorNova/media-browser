@@ -3,8 +3,8 @@ import QtQuick 1.0
 Item {
     id: container
 
-    property string buttonName: "NOT SET"
-    property string text: "NOT SET"
+    property string buttonName: ""
+    property string text: ""
 
     property string fontName: "Helvetica"
     property int fontSize: 12

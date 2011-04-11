@@ -18,7 +18,7 @@ Rectangle {
         id: coverFlow
         anchors {
             fill: parent
-            topMargin: 60
+//            topMargin: 60
         }
 
         model: galleryModel
@@ -31,11 +31,13 @@ Rectangle {
             margins: 10
         }
 
-        text: "X"
-        fontBold: true
+        buttonName: "exitButton"
+        text: ""
+        bgImage: "gfx/exit_button.png"
+        bgImagePressed: "gfx/exit_button_pressed.png"
 
-        width: 40
-        height: 40
+        width: 66
+        height: 66
 
         onClicked: Qt.quit();
     }
