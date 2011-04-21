@@ -9,8 +9,10 @@ QML_IMPORT_PATH = /opt/qtm11/imports
 symbian:TARGET.UID3 = 0xE487F346
 
 # Allow network access on Symbian
-symbian:TARGET.CAPABILITY += NetworkServices
+symbian:TARGET.CAPABILITY += NetworkServices ReadUserData WriteUserData
 symbian:TARGET.EPOCHEAPSIZE = 0x20000 0x4000000
+# ImageScaler library needed for creating the thumbs
+symbian:LIBS += -limagescaler
 
 #maemo5:QMAKE_LFLAGS += -Wl,-rpath,/opt/qtm11/lib
 maemo5:QMAKE_LFLAGS += -Wl
@@ -25,11 +27,21 @@ maemo5:QML_IMPORT_PATH = /opt/qtm11/imports
 # If your application uses the Qt Mobility libraries, uncomment
 # the following lines and add the respective components to the 
 # MOBILITY variable. 
-CONFIG += mobility
+CONFIG += qt mobility
 MOBILITY += gallery
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp
+
+# The desktop Qt for Windows adds +1 to the lib name
+win32 {
+    LIBS += -L../Lib -limagescaler1
+}
+else {
+    LIBS += -L../Lib -limagescaler
+}
+# Extra includes
+INCLUDEPATH += ImageScaler
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
