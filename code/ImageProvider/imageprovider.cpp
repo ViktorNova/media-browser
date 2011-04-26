@@ -18,8 +18,7 @@ ImageProvider::~ImageProvider()
 
 QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    qDebug() << "requestImage - id: " << id;
-
+    // Debug printing.
     if (size) {
         qDebug() << "requestingImage: " << id << ", of size ("
                  << size->width() << "," << size->height() << "), of requestedSize ("
@@ -30,12 +29,40 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
                  << requestedSize.width() << "," << requestedSize.height() << ")";
     }
 
-    // TESTING TESTING TESTING
-    // VKN TODO: Lataa ja palauta täällä bitmäppi!
-    //const QString imgPath("/home/vkes/Temp/Images/Backgrounds/thumbs/" + id);
-    const QString imgPath("E:\\Images\\Backgrounds\\thumbs\\" + id);
-    QImage img(imgPath);
-    return img;
+    // If an image has already been loaded with the given id, it should be found
+    // from the cache. If found, return int directly.
+    QHash<QString, QImage>::const_iterator iter = mCache.find(id);
+    if (iter != mCache.end()) {
+        qDebug() << "Image " << id << " found from the cache!";
+        return iter.value();
+    }
+    else {
+        // TESTING TESTING TESTING
+        //const QString imgPath("/home/vkes/Temp/Images/Backgrounds/thumbs/" + id);
+
+        int fileNameStart = id.lastIndexOf("/") + 1;
+        // TODO: Maybe rather use indexOf("file:///") here instead?
+        const int magicStart = 8;   // Comes from the "file:///" in the beginning of the string
+
+        QString fileName = id.right(id.length() - fileNameStart);
+        QString path = id.mid(magicStart, (fileNameStart-magicStart));
+        QString imgPath( path + "thumbs/" + fileName);
+
+        // Just for easing debugging...
+        qDebug() << "Parsed file name: " << fileName;
+        qDebug() << "Parsed path: " << path;
+        qDebug() << "Final imgPath: " << imgPath;
+
+        // Create and store the image into the cache.
+        // TODO: It *might* not be a good idea to store all images into the cache.
+        // So, would need some added logic to determine which ones to save, which to discard.
+        QImage img(imgPath);
+        if (!img.isNull()) {
+            mCache.insert(id, img);
+        }
+
+        return img;
+    }
 }
 
 /*

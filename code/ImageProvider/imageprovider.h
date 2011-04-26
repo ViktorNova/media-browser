@@ -17,6 +17,10 @@ public:
 
     // Synchronous loading of images
     //QPixmap requestPixmap(const QString& id, QSize* size, const QSize& requestedSize);
+
+private:
+    // For caching images internally
+    QHash<QString, QImage> mCache;
 };
 
 //QML_DECLARE_TYPE(ImageProvider)

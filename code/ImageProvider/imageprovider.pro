@@ -28,13 +28,14 @@ INSTALLS += sources imgprovider_sources target
 symbian {
     #Symbian specific definitions
 #    MMP_RULES += EXPORTUNFROZEN
-#    TARGET.UID3 = 0xE84D651F
-#    TARGET.CAPABILITY = #ALL -TCB -AllFiles -DRM
-    TARGET.EPOCALLOWDLLDATA = 1
+#    TARGET.UID3 = 0xE84D1A1F
+    TARGET.CAPABILITY = ALL -TCB -AllFiles -DRM
+#    TARGET.CAPABILITY = NetworkServices ReadDeviceData WriteDeviceData ReadUserData WriteUserData SwEvent
 #    addFiles.sources = qmlimageproviderplugin.dll qmldir
 #    addFiles.path = ImageProvider
+    TARGET.EPOCALLOWDLLDATA = 1
     addFiles.sources = ImageProvider/qmlimageproviderplugin.dll ImageProvider/qmldir
-    addFiles.path = ImageProvider
+    addFiles.path = $$QT_IMPORTS_BASE_DIR/ImageProvider
     DEPLOYMENT += addFiles
 }
 

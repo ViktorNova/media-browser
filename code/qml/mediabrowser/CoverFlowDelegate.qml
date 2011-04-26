@@ -1,4 +1,6 @@
 import QtQuick 1.0
+//import "../../ImageProvider/ImageProvider" // Import the ImageProvider
+import ImageProvider 1.0 // Import the ImageProvider
 
 Rectangle {
     id: delegateItem
@@ -16,13 +18,19 @@ Rectangle {
         anchors.centerIn: parent
         width: delegateImage.height
         height: parent.height - 20
-        source: {
-            if (pathView.still) {
-                url;
-            } else {
-                "gfx/image_placeholder.png";
-            }
-        }
+
+        // The image will be fetched from the imageprovider -plugin
+        source: "image://imageprovider/" + url
+
+//        source: {
+//            if (pathView.still) {
+//                //url;
+//                // VKN
+//                "image://imageprovider/Beach.jpg";
+//            } else {
+//                "gfx/image_placeholder.png";
+//            }
+//        }
 
         //Image.Ready
         fillMode: Image.PreserveAspectCrop
