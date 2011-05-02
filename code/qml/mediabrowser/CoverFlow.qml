@@ -12,7 +12,8 @@ Rectangle {
 
     width: 640
     height: 360
-    color: "steelblue"
+    //color: "steelblue"
+    color: "black"
 
     Component.onCompleted: {
         console.log("Model has " + model.count + " images");

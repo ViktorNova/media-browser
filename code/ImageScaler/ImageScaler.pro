@@ -20,11 +20,19 @@ HEADERS += imagescaler.h\
 CONFIG += shared
 
 symbian {
-    #Symbian specific definitions
+    # Symbian specific definitions
     MMP_RULES += EXPORTUNFROZEN
     TARGET.UID3 = 0xE84D651E
     TARGET.CAPABILITY = ALL -TCB -AllFiles -DRM
     TARGET.EPOCALLOWDLLDATA = 1
+
+    # Add also support for floating point units, as S^3 devices have it
+    # (Not sure, if it really helps in this image scaling case or not...)
+    MMP_RULES += "OPTION gcce -march=armv6"
+    MMP_RULES += "OPTION gcce -mfpu=vfp"
+    MMP_RULES += "OPTION gcce -mfloat-abi=softfp"
+    MMP_RULES += "OPTION gcce -marm"
+
     addFiles.sources = imagescaler.dll
     addFiles.path = !:/sys/bin
     DEPLOYMENT += addFiles

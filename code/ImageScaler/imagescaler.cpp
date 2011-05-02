@@ -2,6 +2,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
+#include <QtCore/QDirIterator>
 #include <QtCore/QFileInfoList>
 
 #include <QtGui/QImage>
@@ -11,13 +12,15 @@
 #include "imagescaler.h"
 
 // Constants
-static const QString ThumbDirPostfix("thumbs");
+#define THUMBS_DIR "thumbs"
+#define THUMBS_DIR_WITH_PREFIX "/" THUMBS_DIR
+
+//static const QString ThumbDirPostfix("thumbs");
 // Default length for height or width of the thumbnail.
 static const int DefaultThumbSize = 256;
 
 ImageScaler::ImageScaler(QObject *parent):
     QObject(parent),
-    mSaveDir(0),
     mThumbSize(0)
 {
     qDebug() << "ImageScaler object constructed!";
@@ -25,7 +28,7 @@ ImageScaler::ImageScaler(QObject *parent):
 
 ImageScaler::~ImageScaler()
 {
-    delete mSaveDir;
+//    delete mSaveDir;
 }
 
 bool ImageScaler::scaleImages(const QString& path, int thumbSize)
@@ -43,34 +46,39 @@ bool ImageScaler::scaleImages(const QString& path, int thumbSize)
         return false;
     }
 
-    // Create the "/thumbs" subfolder
-    if (mSaveDir)
-        delete mSaveDir;
-    mSaveDir = new QDir(path+ThumbDirPostfix);
-    if (!mSaveDir->exists()) {
-        qDebug() << "Creating thumbs folder!";
-        if (!imageDir.mkdir(ThumbDirPostfix)) {
-            qDebug() << "Thumbs folder creation failed. Quitting!";
-            return false;
-        }
-    }
-
     qDebug() << "Requested thumb size: " << thumbSize;
-    qDebug() << "ImageDir " << imageDir.path() << " & SaveDir " << mSaveDir->path();
+    qDebug() << "ImageDir " << imageDir.path();
+    // Debug counting of files
+    int dbgCount = 0;
 
-    // Read the contents of the dir
-    QFileInfoList list = imageDir.entryInfoList();
-    for (int i = 0; i < list.size(); ++i) {
-        QFileInfo info = list.at(i);
+    // Iterate through all the files also in the subfolders
+    QDirIterator dirIter(imageDir, QDirIterator::Subdirectories);
+    while (dirIter.hasNext()) {
+        // Uncomment, if you would like to see the contents of the dir
+        qDebug() << dirIter.filePath();
 
-        // Convert the image to a thumbnail
-        if (info.isFile()) {
-            convertToThumb(info.filePath());
+        // Fetch the QFileInfo from the current dir iterator
+        QFileInfo info = dirIter.fileInfo();
+
+        // Convert the image to a thumbnail, if it is a file and the folder
+        // in which the file exists isn't a /thumbs -folder!
+        if (info.isFile() && info.filePath().indexOf(THUMBS_DIR_WITH_PREFIX) < 0) {
+            // Convert to thumbnail
+            convertToThumb(info);
+            dbgCount++;
+        }
+        else {
+            // item was either a folder itself or a file which was in
+            // a thumbs folder. Just debug print here.
+            qDebug() << "Skipped " << dirIter.filePath();
         }
 
-        // Uncomment, if you would like to see the contents of the dir
-        //qDebug() << info.absoluteFilePath();
+        // Move the iterator forward
+        dirIter.next();
     }
+
+    // DEBUG PRINT! Uncomment, if not needed.
+    qDebug() << "Count of converted files: " << dbgCount;
 
     return true;
 }
@@ -78,26 +86,33 @@ bool ImageScaler::scaleImages(const QString& path, int thumbSize)
 bool ImageScaler::convertToThumb(const QFileInfo& info)
 {
     bool retVal = false;
-    // TODO: Maybe use some DB solution to save the information?
-    if (mSaveDir->exists()) {
-        QString saveName = mSaveDir->path() + "/" + info.fileName();
 
-        // Check if the file already exists
-        if (QFile::exists(saveName)) {
-            qDebug() << "File: " << saveName << " already exist!";
-        } else {
-            // Does not exist yet, read, scale & save the image!
-            retVal = saveImage(info);
+    // Create the "/thumbs" subfolder, if not already exist!
+    QDir saveDir(info.path()+ THUMBS_DIR_WITH_PREFIX);
+    if (!saveDir.exists()) {
+        qDebug() << "Creating thumbs folder!";
+        QDir topDir(info.path());
+        if (!topDir.mkdir(THUMBS_DIR)) {
+            qDebug() << "Thumbs folder creation failed. Quitting!";
+            return false;
         }
     }
-    else {
-        qDebug() << "Savedir does not exist!";
+
+    // TODO: Maybe use some DB solution to save the information?
+    QString saveName = saveDir.path() + "/" + info.fileName();
+
+    // Check if the file already exists
+    if (QFile::exists(saveName)) {
+        qDebug() << "File: " << saveName << " already exist!";
+    } else {
+        // Does not exist yet, read, scale & save the image!
+        retVal = saveImage(info, saveName);
     }
 
     return retVal;
 }
 
-bool ImageScaler::saveImage(const QFileInfo& info)
+bool ImageScaler::saveImage(const QFileInfo& info, const QString& saveName)
 {
     bool retVal = false;
     // Create the image reader to handle the downscaling of the image
@@ -126,10 +141,9 @@ bool ImageScaler::saveImage(const QFileInfo& info)
     imageReader.setScaledSize(QSize(width, height));
     QImage thumbnail = imageReader.read();
     // Save the image to disk right away
-    QString saveName = mSaveDir->path() + "/" + info.fileName();
     retVal = thumbnail.save(saveName);
 
-    qDebug() << "Image: " << info.fileName() << " saved to " << mSaveDir->path()
+    qDebug() << "Image: " << info.fileName() << " saved to " << saveName
              << ", img.save()'s retVal was: " << retVal << "!";
 
     return retVal;

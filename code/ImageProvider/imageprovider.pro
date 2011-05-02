@@ -26,13 +26,16 @@ target.path += ImageProvider
 INSTALLS += sources imgprovider_sources target
 
 symbian {
-    #Symbian specific definitions
-#    MMP_RULES += EXPORTUNFROZEN
-#    TARGET.UID3 = 0xE84D1A1F
+    # Symbian specific definitions
+
+    # Add also support for floating point units, as S^3 devices have it
+    # (Not sure, if it really helps in this case or not...)
+    MMP_RULES += "OPTION gcce -march=armv6"
+    MMP_RULES += "OPTION gcce -mfpu=vfp"
+    MMP_RULES += "OPTION gcce -mfloat-abi=softfp"
+    MMP_RULES += "OPTION gcce -marm"
+
     TARGET.CAPABILITY = ALL -TCB -AllFiles -DRM
-#    TARGET.CAPABILITY = NetworkServices ReadDeviceData WriteDeviceData ReadUserData WriteUserData SwEvent
-#    addFiles.sources = qmlimageproviderplugin.dll qmldir
-#    addFiles.path = ImageProvider
     TARGET.EPOCALLOWDLLDATA = 1
     addFiles.sources = ImageProvider/qmlimageproviderplugin.dll ImageProvider/qmldir
     addFiles.path = $$QT_IMPORTS_BASE_DIR/ImageProvider

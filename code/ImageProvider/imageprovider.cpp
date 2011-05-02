@@ -54,7 +54,7 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
         qDebug() << "Final imgPath: " << imgPath;
 
         // Create and store the image into the cache.
-        // TODO: It *might* not be a good idea to store all images into the cache.
+        // TODO: It *might not* be a good idea to store all images into the cache.
         // So, would need some added logic to determine which ones to save, which to discard.
         QImage img(imgPath);
         if (!img.isNull()) {

@@ -8,7 +8,6 @@
 // Forward declarations
 class QFileInfo;
 class QImage;
-class QDir;
 
 class IMAGESCALERSHARED_EXPORT ImageScaler: public QObject
 {
@@ -32,10 +31,9 @@ private:
 
     // Worker methods, that do the actual conversion & saving
     bool convertToThumb(const QFileInfo& info);
-    bool saveImage(const QFileInfo& info);
+    bool saveImage(const QFileInfo& info, const QString& saveName);
 
 private: // Data
-    QDir* mSaveDir;
     int mThumbSize;
 };
 

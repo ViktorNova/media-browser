@@ -13,3 +13,6 @@ glob:*.mmp
 glob:moc_*
 glob:*.o
 glob:Makefile
+glob:Lib/*
+glob:plugin_commonu.def
+glob:qmakepluginstubs/*

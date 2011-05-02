@@ -13,6 +13,8 @@ symbian:TARGET.CAPABILITY += NetworkServices ReadUserData WriteUserData
 symbian:TARGET.EPOCHEAPSIZE = 0x20000 0x4000000
 # ImageScaler library needed for creating the thumbs
 symbian:LIBS += -limagescaler
+# Add also support for floating point units, as S^3 devices have it
+MMP_RULES += "OPTION gcce -march=armv6 -mfpu=vfp -mfloat-abi=softfp -marm"
 
 #maemo5:QMAKE_LFLAGS += -Wl,-rpath,/opt/qtm11/lib
 maemo5:QMAKE_LFLAGS += -Wl
@@ -35,7 +37,7 @@ SOURCES += main.cpp
 
 # The desktop Qt for Windows adds +1 to the lib name
 win32 {
-    LIBS += -L../Lib -limagescaler1
+    LIBS += -L../code/Lib -limagescaler1
 }
 else {
     LIBS += -L../Lib -limagescaler
