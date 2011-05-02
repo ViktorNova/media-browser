@@ -4,15 +4,16 @@
 #include "qmlapplicationviewer.h"
 #include "imagescaler.h"
 
-// Few consts
+// Few constants
+static const int thumbSize = 180;
 #ifdef Q_OS_SYMBIAN
-    // TODO: Perhaps this should be defined more elegantly?
-    static const QString imagePath("E:\\Images\\Backgrounds\\");
+    // Constants
+    #define IMAGE_PATH "E:\\Images\\"
 #else
-    static const QString imagePath("/Images/Backgrounds/");
+    #define IMAGE_PATH "/Temp/Images/"
 #endif
-static const int thumbSize = 256;
 
+// Entry point for the QML application
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -26,7 +27,7 @@ int main(int argc, char *argv[])
     context->setContextProperty("cpThumbCreator", thumbCreator);
     // Create the thumbnails once.
     // TODO: Perhaps this should be called from withing the QML?
-    thumbCreator->scaleImages(imagePath, thumbSize);
+    thumbCreator->scaleImages(QString(IMAGE_PATH), thumbSize);
 
 #if defined(Q_WS_MAEMO_5)
     viewer.addImportPath(QString("/opt/qtm11/imports"));
