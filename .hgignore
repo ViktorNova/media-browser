@@ -16,3 +16,5 @@ glob:Makefile
 glob:Lib/*
 glob:plugin_commonu.def
 glob:qmakepluginstubs/*
+glob:Sis/
+glob:libimagescaler.so*

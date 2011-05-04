@@ -13,7 +13,15 @@ Rectangle {
     width: 640
     height: 360
     //color: "steelblue"
-    color: "black"
+    //color: "black"
+    // Background image
+    Image {
+        id: background
+
+        width: parent.width
+        height: parent.height
+        source: "gfx/background_n8.png"
+    }
 
     Component.onCompleted: {
         console.log("Model has " + model.count + " images");

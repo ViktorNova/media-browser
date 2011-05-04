@@ -23,7 +23,19 @@ sources.files += $$SOURCES imageprovider.pro untitled.qml
 sources.path += .
 target.path += ImageProvider
 
-INSTALLS += sources imgprovider_sources target
+unix:!symbian {
+    maemo5 {
+        # Nothing yet.
+        target.path = /opt/usr/lib
+    } else {
+        target.path = /usr/local/lib
+        # Put the library to a some nice place, for the testApp to find it easily.
+        DESTDIR += ../Lib
+    }
+}
+
+INSTALLS += imgprovider_sources target
+
 
 symbian {
     # Symbian specific definitions

@@ -38,13 +38,16 @@ symbian {
     DEPLOYMENT += addFiles
 }
 
-unix {
+unix:!symbian {
     maemo5 {
         # Nothing yet.
+        target.path = /opt/usr/lib
     } else {
+        target.path = /usr/local/lib
         # Put the library to a some nice place, for the testApp to find it easily.
-    DESTDIR += ../Lib
+        DESTDIR += ../Lib
     }
+    INSTALLS += target
 }
 
 win32 {
@@ -52,11 +55,11 @@ win32 {
 }
 
 # OLD STUFF
-#unix:!symbian {
+#unix {
 #    maemo5 {
-#        target.path = /opt/usr/lib
+#        #nothing here yet
 #    } else {
-#        target.path = /usr/local/lib
+#        # Put the library to a some nice place, for the testApp to find it easily.
+#        DESTDIR += ../Lib
 #    }
-#    INSTALLS += target
 #}
