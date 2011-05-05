@@ -41,6 +41,7 @@ Rectangle {
         focus: true
         interactive: true
         pathItemCount: 7
+        //pathItemCount: 9  // Works also with 9 items, just slows down a bit.
 
         onMovementStarted: {
             pathView.still = false;
@@ -69,35 +70,46 @@ Rectangle {
         }
     }
 
+    // The path defining where the items appear and how they move around.
+    //
+    // Note: The x-axis value is defined in percentages of the
+    // screen width like below. The path is a straight horizontal line.
     Path {
         id: coverFlowPath
+
+        // "Start zone"
         startX: 0
         startY: coverFlow.height / 2
         PathAttribute { name: "z"; value: 0 }
-        PathAttribute { name: "angle"; value: 90 }
-        PathAttribute { name: "iconScale"; value: 0.4 }
+        PathAttribute { name: "angle"; value: 70 }
+        PathAttribute { name: "iconScale"; value: 0.6 }
 
-        // First stop
-        PathLine { x: coverFlow.width / 8; y: coverFlow.height / 2;  }
+        // Just before middle
+        PathLine { x: coverFlow.width * 0.35; y: coverFlow.height / 2;  }
         PathAttribute { name: "z"; value: 50 }
         PathAttribute { name: "angle"; value: 45 }
-        PathAttribute { name: "iconScale"; value: 0.8 }
+        PathAttribute { name: "iconScale"; value: 0.85 }
+        PathPercent { value: 0.40 }
 
         // Middle
-        PathLine { x: coverFlow.width / 2; y: coverFlow.height / 2;  }
+        PathLine { x: coverFlow.width * 0.5; y: coverFlow.height / 2;  }
         PathAttribute { name: "z"; value: 100 }
         PathAttribute { name: "angle"; value: 0 }
         PathAttribute { name: "iconScale"; value: 1.0 }
 
-        PathLine { x: coverFlow.width/8*7; y: coverFlow.height / 2; }
+        // Just after middle
+        PathLine { x: coverFlow.width * 0.65; y: coverFlow.height / 2; }
         PathAttribute { name: "z"; value: 50 }
         PathAttribute { name: "angle"; value: -45 }
-        PathAttribute { name: "iconScale"; value: 0.8 }
+        PathAttribute { name: "iconScale"; value: 0.85 }
+        PathPercent { value: 0.60 }
 
+        // Final stop
         PathLine { x: coverFlow.width; y: coverFlow.height / 2; }
         PathAttribute { name: "z"; value: 0 }
-        PathAttribute { name: "angle"; value: -90 }
-        PathAttribute { name: "iconScale"; value: 0.4 }
+        PathAttribute { name: "angle"; value: -70 }
+        PathAttribute { name: "iconScale"; value: 0.6 }
+        PathPercent { value: 1.0 }
     }
 
 }

@@ -25,7 +25,7 @@ Rectangle {
             id: delegateImage
             width: delegateItem.width
             height: delegateImage.width
-            color: "white"
+            color: dlgImg.status == Image.Ready ? "white" : "transparent"
 
             // Should go on top of the reflection image when zooming.
             z: reflection.z + 1
