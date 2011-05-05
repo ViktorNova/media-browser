@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>gfx/fade_mask.png</file>
+    </qresource>
+</RCC>

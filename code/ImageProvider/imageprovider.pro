@@ -15,6 +15,8 @@ HEADERS += \
     imageprovider_plugin.h \
     imageprovider.h
 
+RESOURCES += imageprovider.qrc
+
 imgprovider_sources.files = \
     ImageProvider/qmldir
 imgprovider_sources.path = ImageProvider

@@ -54,14 +54,9 @@ Rectangle {
         }
 
         // Reflection
-        Rectangle {
+        Item {
             width: delegateImage.width
             height: delegateImage.width
-            color: "white"
-
-            // TODO: Using opacity instead of the gradient, as gradient does
-            // not work correctly when there are 3D transformations applied.
-            opacity: 0.6
 
             Image {
                 id: reflection
@@ -74,7 +69,8 @@ Rectangle {
 
                 // The reflection uses the same image as the delegateImage.
                 // This way there's no need to ask the image again from the provider.
-                source: dlgImg.source
+                //source: dlgImg.source
+                source: "image://imageprovider/reflection/" + url
 
                 fillMode: Image.PreserveAspectCrop
                 asynchronous: true
