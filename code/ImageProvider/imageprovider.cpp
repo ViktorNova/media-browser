@@ -16,7 +16,7 @@ ImageProvider::ImageProvider():
     qDebug() << "Constructing ImageProvider";
 
     // Create the fading image
-    mFadeMask.load(":/gfx/fade_mask.png");
+    mFadeMask.load(":/gfx/fade_alpha_mask.png");
     mFadeMask.convertToFormat(QImage::Format_ARGB32_Premultiplied);
     qDebug() << "Fadeimage format: " << mFadeMask.format();
 }
@@ -94,16 +94,16 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
     }
 }
 
-QImage ImageProvider::maskedImage(QImage& orig)
+QImage ImageProvider::maskedImage(QImage& destination)
 {
-    qDebug() << "In maskedImage! Format before conversion: " << orig.format();
+    qDebug() << "In maskedImage! Format before conversion: " << destination.format();
     // Convert the image to premultiplied alpha format, as it should be
     // faster with transparencies & blending.
-    QImage converted = orig.convertToFormat(QImage::Format_ARGB32_Premultiplied);
+    QImage converted = destination.convertToFormat(QImage::Format_ARGB32_Premultiplied);
 
     QPainter painter(&converted);
     painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-    painter.drawImage(orig.rect(), mFadeMask, mFadeMask.rect());
+    painter.drawImage(destination.rect(), mFadeMask, mFadeMask.rect());
 
     return converted;
 }

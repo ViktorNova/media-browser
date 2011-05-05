@@ -61,10 +61,10 @@ Rectangle {
             Image {
                 id: reflection
 
-                width: delegateImage.width - 8
-                height: delegateImage.width - 8
+                width: delegateImage.width
+                height: delegateImage.width
                 anchors.centerIn: parent
-                sourceSize.width: delegateImage.width - 8
+                sourceSize.width: delegateImage.width
                 clip: true
 
                 // The reflection uses the same image as the delegateImage.
