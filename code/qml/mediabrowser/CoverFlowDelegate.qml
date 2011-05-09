@@ -39,6 +39,7 @@ Rectangle {
 
                 // Only set sourceSize.width or height to maintain aspect ratio.
                 sourceSize.width: delegateImage.width - 8
+                sourceSize.height: delegateImage.height - 8
                 clip: true
 
                 // Don't stretch the image, and use asynchronous loading.
@@ -65,6 +66,7 @@ Rectangle {
                 height: delegateImage.width
                 anchors.centerIn: parent
                 sourceSize.width: delegateImage.width
+                sourceSize.height: delegateImage.height
                 clip: true
 
                 // The reflection uses the same image as the delegateImage.
@@ -96,7 +98,12 @@ Rectangle {
                 // TODO real states with transitions and animations
                 //delegateItem.scale = 1.5
                 parent.state == "scaled" ?
-                    parent.state = "" : parent.state ="scaled"
+                    parent.state = "" : parent.state = "scaled"
+
+                // Switch to the ImageView
+                largeImage.imagePath = url
+                largeImage.visible = true
+                largeImageItem.z = parent.z + 1
             } else {
                 console.log("Clicked on item at index " + index + ", focusing it")
                 pathView.currentIndex = index;

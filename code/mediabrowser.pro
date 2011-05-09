@@ -5,6 +5,7 @@ DEPLOYMENTFOLDERS = folder_01
 
 # Additional import path used to resolve QML modules in Creator's code model
 #QML_IMPORT_PATH = /opt/qtm11/imports
+#QTPLUGIN += qmlimageproviderplugin
 
 symbian {
     TARGET.UID3 = 0xE487F346
@@ -13,8 +14,19 @@ symbian {
     TARGET.EPOCHEAPSIZE = 0x20000 0x4000000
     # ImageScaler library needed for creating the thumbs
     LIBS += -limagescaler
+    #LIBS += -lqmlimageproviderplugin
+    #TARGET.EPOCALLOWDLLDATA = 1
     # Add also support for floating point units, as S^3 devices have it
     MMP_RULES += "OPTION gcce -march=armv6 -mfpu=vfp -mfloat-abi=softfp -marm"
+
+    # Add also ImageProvider & ImageScaler libraries
+    # TODO: Including the ImageProvider plugin does not work yet.
+    #imageprovider.sources = ImageProvider/qmlimageproviderplugin.dll ImageProvider/qmldir
+    #imageprovider.path = $$QT_IMPORTS_BASE_DIR/ImageProvider
+    imagescaler.sources = imagescaler.dll
+    imagescaler.path = !:/sys/bin
+    DEPLOYMENT += imagescaler #imageprovider
+    #DEPLOYMENT_PLUGIN += qmlimageproviderplugin
 } else:maemo5 {
     #QMAKE_LFLAGS += -Wl,-rpath,/opt/qtm11/lib
     QT += opengl

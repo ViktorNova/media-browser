@@ -1,5 +1,6 @@
 #include <QtGui/QApplication>
 #include <QtDeclarative/QDeclarativeContext>
+//#include <QtCore/QtPlugin>
 
 #include "qmlapplicationviewer.h"
 #include "imagescaler.h"
@@ -12,6 +13,10 @@ static const int thumbSize = 180;
 #else
     #define IMAGE_PATH "/Temp/Images/"
 #endif
+
+// Trying to get the plugin working..
+// NOTE: Doesn't work this way, yet at least.
+//Q_IMPORT_PLUGIN(qmlimageproviderplugin)
 
 // Entry point for the QML application
 int main(int argc, char *argv[])

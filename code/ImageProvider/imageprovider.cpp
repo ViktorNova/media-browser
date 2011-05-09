@@ -1,11 +1,14 @@
 #include "imageprovider.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QFile>
 #include <QtDeclarative/qdeclarative.h>
 #include <QtGui/QPainter>
+#include <QtGui/QImageReader>
 
 // Constants
 #define FILE_PREFIX "file:///"
+#define FULL_IMAGE_FILE_PREFIX "full/" FILE_PREFIX
 #define REFLECTION_FILE_PREFIX "reflection/" FILE_PREFIX
 
 
@@ -47,44 +50,61 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
     }
     else {
         const QString FilePrefix(FILE_PREFIX);
+        const QString FullImagePrefix(FULL_IMAGE_FILE_PREFIX);
         const QString ReflectionPrefix(REFLECTION_FILE_PREFIX);
 
         bool isReflection = false;
+        bool isFullImage = false;
         int fileNameStart = id.lastIndexOf("/") + 1;
         QString fileName = id.right(id.length() - fileNameStart);
         QString path("");
+        QString imgPath("");
 
         // Check the given URI
         if (id.indexOf(ReflectionPrefix) != -1) {
             const int start = ReflectionPrefix.length();
             qDebug() << "Index of reflection/file:/// is:" << id.indexOf(ReflectionPrefix);
             path = id.mid(start, (fileNameStart-start));
+            imgPath = QString( path + "thumbs/" + fileName);
             isReflection = true;
-        } else if (id.indexOf(FilePrefix) != -1) {
+        } else if (id.indexOf(FullImagePrefix) != -1) {
+            const int start = FullImagePrefix.length();
+            qDebug() << "Index of full/file:/// is:" << id.indexOf(FullImagePrefix);
+            path = id.mid(start, (fileNameStart-start));
+            imgPath = QString( path + fileName);
+            isFullImage = true;
+        }
+        else if (id.indexOf(FilePrefix) != -1) {
             qDebug() << "Index of plain file:/// is:" << id.indexOf(FilePrefix);
             const int start = FilePrefix.length();
             path = id.mid(start, (fileNameStart-start));
+            imgPath = QString( path + "thumbs/" + fileName);
         } else {
             // The provided uri was of wrong type!
             qDebug() << "The given uri (" << id << ") was incorrect! Panic!";
             Q_ASSERT(false);
         }
 
-        QString imgPath( path + "thumbs/" + fileName);
-
         // Just for easing debugging...
         qDebug() << "Parsed file name: " << fileName;
         qDebug() << "Parsed path: " << path;
         qDebug() << "Final imgPath: " << imgPath;
 
-        // Create and store the image into the cache.
-        QImage img(imgPath);
+        // Create and store the image into the cache (if not full image, that is).
+        //QImage img(imgPath);
+        QImage img;
+        if (!QFile::exists(imgPath)) {
+            qDebug() << "The file does not exist!";
+            return img;
+        }
+
+        img = getImage(imgPath, requestedSize);
         if (isReflection) {
             img = maskedImage(img);
         }
 
         qDebug() << "QImage format is: " << img.format();
-        if (!img.isNull()) {
+        if (!img.isNull() && !isFullImage) {
             // TODO: It *might not* be a good idea to store all images into the cache.
             // So, would need some added logic to determine which ones to save, which to discard.
             mCache.insert(id, img);
@@ -106,6 +126,38 @@ QImage ImageProvider::maskedImage(QImage& destination)
     painter.drawImage(destination.rect(), mFadeMask, mFadeMask.rect());
 
     return converted;
+}
+
+QImage ImageProvider::getImage(const QString& path, const QSize& size)
+{
+    // Create the image reader to handle the scaling of the image
+    QImageReader imageReader(path);
+    if (!imageReader.canRead()) {
+        qDebug() << "ERROR: ImageReader cannot read file from: " << path << "!";
+        Q_ASSERT(false);
+    }
+
+    int scaledSize = qMax(size.height(), size.width());
+
+    // Calculate the new dimensions for the thumbnail. Preserve aspect ratio.
+    int width = imageReader.size().width();
+    int height = imageReader.size().height();
+
+    if (width > height) {
+        height = static_cast<double>(scaledSize) / width * height;
+        width = scaledSize;
+    } else if (width < height) {
+        width = static_cast<double>(scaledSize) / height * width;
+        height = scaledSize;
+    } else {
+        width = scaledSize;
+        height = scaledSize;
+    }
+
+    // Set the correct size to which we want the image to be read. Read it.
+    imageReader.setScaledSize(QSize(width, height));
+    qDebug() << "Reading Image from: " << path << " with size (" << width << "x" << height << ") !";
+    return imageReader.read();
 }
 
 /*

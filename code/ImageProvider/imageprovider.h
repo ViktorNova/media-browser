@@ -22,6 +22,7 @@ public:
 
 private: // Methods
     QImage maskedImage(QImage& orig);
+    QImage getImage(const QString& path, const QSize& size);
 
 private:
     // For caching images internally
