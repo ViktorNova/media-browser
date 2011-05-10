@@ -7,16 +7,7 @@ Item {
     property int fillMode: Image.PreserveAspectFit
     signal closed();
 
-    visible: false
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        onClicked: {
-            imageView.closed();
-            console.log("imageView's mouseArea clicked")
-        }
-    }
+    opacity: 0
 
     Image {
         id: img
@@ -30,4 +21,40 @@ Item {
         // Setting this will provide a larger image
         source: "image://imageprovider/full/" + imagePath
     }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        onClicked: {
+            imageView.closed();
+            console.log("imageView's mouseArea clicked")
+
+            parent.state == "visible" ?
+                parent.state = "" : parent.state = "visible"
+        }
+    }
+
+    states: [
+        State {
+            name: "visible"
+            PropertyChanges {
+                target: largeImage
+                opacity: 1.0
+            }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: ""
+            to: "visible"
+            reversible: true
+
+            PropertyAnimation {
+                target: largeImage
+                properties: "opacity"
+                duration: 500
+            }
+        }
+    ]
 }

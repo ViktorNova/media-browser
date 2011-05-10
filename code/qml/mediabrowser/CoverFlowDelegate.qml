@@ -83,9 +83,30 @@ Rectangle {
                     origin.y: delegateImage.height / 2
                 }
 
-                // TODO: This should create a layer of opacity on top of the image!
-                // Still needs some work.
+                // NOTE: This does not work when there's 3D transformations
+                // (like rotation around Y-axis or X-axis)
                 //AlphaGradient {}
+            }
+        }
+    }
+
+    // View showing the real image instead of the upscaled version of it.
+    Item {
+        id: largeImageItem
+
+        anchors.centerIn: parent
+        width: container.width - 10
+        height: container.height - 10
+        z: parent.z + 1
+
+        ImageView {
+            id: largeImage
+            anchors.fill: parent
+            fillMode: Image.PreserveAspectFit
+
+            onClosed: {
+                console.log("Closing largeImage")
+                delegateItem.state = ""
             }
         }
     }
@@ -95,15 +116,13 @@ Rectangle {
         onClicked: {
             if (pathView.currentIndex == index) {
                 console.log("Clicked on current item, zoom it")
-                // TODO real states with transitions and animations
-                //delegateItem.scale = 1.5
+
                 parent.state == "scaled" ?
                     parent.state = "" : parent.state = "scaled"
 
                 // Switch to the ImageView
                 largeImage.imagePath = url
-                largeImage.visible = true
-                largeImageItem.z = parent.z + 1
+                largeImage.state = "visible"
             } else {
                 console.log("Clicked on item at index " + index + ", focusing it")
                 pathView.currentIndex = index;
@@ -128,7 +147,11 @@ Rectangle {
                 target: delegateImage
                 clip: false
                 // Scale up the icon
-                scale: 1.5
+                scale: 2.0
+            }
+            PropertyChanges {
+                target: delegateImage
+                opacity: 0.20
             }
         }
     ]
@@ -138,10 +161,17 @@ Rectangle {
             from: ""
             to: "scaled"
             reversible: true
-            PropertyAnimation {
-                target: delegateImage
-                properties: "scale"
-                duration: 300
+            ParallelAnimation {
+                PropertyAnimation {
+                    target: delegateImage
+                    properties: "scale"
+                    duration: 300
+                }
+                PropertyAnimation {
+                    target: delegateImage
+                    properties: "opacity"
+                    duration: 300
+                }
             }
         }
     ]

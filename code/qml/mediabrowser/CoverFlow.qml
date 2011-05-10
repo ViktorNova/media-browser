@@ -28,28 +28,6 @@ Rectangle {
         pathView.currentIndex = 0;
     }
 
-    Item {
-        id: largeImageItem
-
-        anchors.centerIn: parent
-        width: container.width - 10
-        height: container.height - 10
-
-        ImageView {
-            id: largeImage
-            width: parent.width
-            height: parent.height
-            fillMode: Image.PreserveAspectFit
-
-            anchors.centerIn: parent
-
-            onClosed: {
-                console.log("Closing largeImage")
-                largeImage.visible = false
-            }
-        }
-    }
-
     PathView {
         id: pathView
         property bool still: true
