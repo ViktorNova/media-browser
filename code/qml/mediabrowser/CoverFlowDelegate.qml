@@ -38,8 +38,8 @@ Rectangle {
                 anchors.centerIn: parent
 
                 // Only set sourceSize.width or height to maintain aspect ratio.
-                sourceSize.width: delegateImage.width - 8
-                sourceSize.height: delegateImage.height - 8
+                sourceSize.width: delegateImage.width
+                sourceSize.height: delegateImage.height
                 clip: true
 
                 // Don't stretch the image, and use asynchronous loading.
@@ -91,23 +91,18 @@ Rectangle {
     }
 
     // View showing the real image instead of the upscaled version of it.
-    Item {
-        id: largeImageItem
-
+    ImageView {
+        id: largeImage
         anchors.centerIn: parent
-        width: container.width - 10
-        height: container.height - 10
+        width: container.width - 80
+        height: container.height - 20
         z: parent.z + 1
 
-        ImageView {
-            id: largeImage
-            anchors.fill: parent
-            fillMode: Image.PreserveAspectFit
+        fillMode: Image.PreserveAspectFit
 
-            onClosed: {
-                console.log("Closing largeImage")
-                delegateItem.state = ""
-            }
+        onClosed: {
+            console.log("Closing largeImage")
+            delegateItem.state = ""
         }
     }
 
@@ -151,7 +146,7 @@ Rectangle {
             }
             PropertyChanges {
                 target: delegateImage
-                opacity: 0.20
+                opacity: 0.001 // Hide the icon practically completely
             }
         }
     ]

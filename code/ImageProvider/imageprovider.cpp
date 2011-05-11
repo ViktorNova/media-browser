@@ -59,6 +59,7 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
         QString fileName = id.right(id.length() - fileNameStart);
         QString path("");
         QString imgPath("");
+        QImage img;
 
         // Check the given URI
         if (id.indexOf(ReflectionPrefix) != -1) {
@@ -83,6 +84,7 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
             // The provided uri was of wrong type!
             qDebug() << "The given uri (" << id << ") was incorrect! Panic!";
             Q_ASSERT(false);
+            return img;
         }
 
         // Just for easing debugging...
@@ -91,14 +93,12 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
         qDebug() << "Final imgPath: " << imgPath;
 
         // Create and store the image into the cache (if not full image, that is).
-        //QImage img(imgPath);
-        QImage img;
         if (!QFile::exists(imgPath)) {
             qDebug() << "The file does not exist!";
             return img;
         }
 
-        img = getImage(imgPath, requestedSize);
+        img = getImage(imgPath, requestedSize, isFullImage);
         if (isReflection) {
             img = maskedImage(img);
         }
@@ -122,13 +122,17 @@ QImage ImageProvider::maskedImage(QImage& destination)
     QImage converted = destination.convertToFormat(QImage::Format_ARGB32_Premultiplied);
 
     QPainter painter(&converted);
+    // Draw white rectangle around the image
+    painter.setPen(QPen(Qt::white, 4));
+    painter.drawRect(converted.rect());
+
     painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
     painter.drawImage(destination.rect(), mFadeMask, mFadeMask.rect());
 
     return converted;
 }
 
-QImage ImageProvider::getImage(const QString& path, const QSize& size)
+QImage ImageProvider::getImage(const QString& path, const QSize& size, bool fullImage)
 {
     // Create the image reader to handle the scaling of the image
     QImageReader imageReader(path);
@@ -157,19 +161,24 @@ QImage ImageProvider::getImage(const QString& path, const QSize& size)
     // Set the correct size to which we want the image to be read. Read it.
     imageReader.setScaledSize(QSize(width, height));
     qDebug() << "Reading Image from: " << path << " with size (" << width << "x" << height << ") !";
-    return imageReader.read();
+    QImage retImg = imageReader.read();
+
+    // If a "full image" was requested, draw white borders around it.
+    if (fullImage) {
+        qDebug() << "Drawing white borders around full image";
+        QPainter painter(&retImg);
+        painter.setPen(QPen(Qt::white, 8));
+        painter.drawRect(retImg.rect());
+    }
+
+    return retImg;
 }
 
 /*
 QPixmap ImageProvider::requestPixmap(const QString& id, QSize* size, const QSize& requestedSize)
 {
-    // VKN TODO: Lataa ja palauta täällä bitmäppi!
+    // No need to implement this method, as the requestImage will be used.
     qDebug() << "requestPixmap - id: " << id;
-
-    // TESTING TESTING TESTING
-    const QString imgPath("/Temp/Images/Backgrounds/thumbs/Forest.jpg");
-    QPixmap pixmap(imgPath);
-    return pixmap;
 }
 */
 
