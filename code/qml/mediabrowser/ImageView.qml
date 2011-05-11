@@ -17,6 +17,7 @@ Item {
 
         sourceSize.width: imageView.width
         sourceSize.height: imageView.height
+        smooth: true
 
         // Setting this will provide a larger image
         source: "image://imageprovider/full/" + imagePath
@@ -48,12 +49,21 @@ Item {
         Transition {
             from: ""
             to: "visible"
-            reversible: true
 
             PropertyAnimation {
                 target: largeImage
                 properties: "opacity"
                 duration: 500
+            }
+        },
+        Transition {
+            from: "visible"
+            to: ""
+
+            PropertyAnimation {
+                target: largeImage
+                properties: "opacity"
+                duration: 200
             }
         }
     ]
