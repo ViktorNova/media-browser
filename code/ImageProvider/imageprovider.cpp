@@ -177,13 +177,8 @@ QImage ImageProvider::getImage(const QString& path, const QSize& size, bool full
 /*
 QPixmap ImageProvider::requestPixmap(const QString& id, QSize* size, const QSize& requestedSize)
 {
-    // VKN TODO: Lataa ja palauta t‰‰ll‰ bitm‰ppi!
+    // No need to implement this method, as the requestImage will be used.
     qDebug() << "requestPixmap - id: " << id;
-
-    // TESTING TESTING TESTING
-    const QString imgPath("/Temp/Images/Backgrounds/thumbs/Forest.jpg");
-    QPixmap pixmap(imgPath);
-    return pixmap;
 }
 */
 
