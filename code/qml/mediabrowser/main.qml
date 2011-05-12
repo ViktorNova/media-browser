@@ -40,8 +40,8 @@ Rectangle {
         bgImage: "gfx/exit_button.png"
         bgImagePressed: "gfx/exit_button_pressed.png"
 
-        width: 66
-        height: 66
+        width: 64
+        height: 64
 
         onClicked: Qt.quit();
     }

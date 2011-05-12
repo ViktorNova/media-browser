@@ -142,7 +142,7 @@ Rectangle {
                 target: delegateImage
                 clip: false
                 // Scale up the icon
-                scale: 2.0
+                scale: 1.8
             }
             PropertyChanges {
                 target: delegateImage
