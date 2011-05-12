@@ -1,14 +1,18 @@
 import QtQuick 1.0
 
 Rectangle {
-    width: parent.width
-    height: parent.height
+    width: 340
+    height: 340
     color: "gray"
 
     property string infoText: "image.jpg"
     signal closed()
 
     Text {
+        width: parent.width
+        height: parent.height
+
+        wrapMode: Text.WordWrap
         text: infoText
     }
 

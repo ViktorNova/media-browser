@@ -3,6 +3,15 @@ import QtQuick 1.0
 Item {
     id: imageView
 
+    // The width and height will be defined by the size
+    // of the shown image!
+    width: img.width
+    height: img.height
+
+    // These define, how big can the shown image be at maximum.
+    property int maxWidth: 560
+    property int maxHeight: 340
+
     property string imagePath: ""
     property int fillMode: Image.PreserveAspectFit
     signal closed();
@@ -12,11 +21,14 @@ Item {
     Image {
         id: img
         fillMode: Image.PreserveAspectFit
-        width: imageView.width
-        height: imageView.height
+        anchors.centerIn: parent
 
-        sourceSize.width: imageView.width
-        sourceSize.height: imageView.height
+        // Image size will be automatic, determined by the imageprovider!
+        //width: imageView.width
+        //height: imageView.height
+
+        sourceSize.width: imageView.maxWidth
+        sourceSize.height: imageView.maxHeight
         smooth: true
 
         // Setting this will provide a larger image
@@ -147,7 +159,7 @@ Item {
             PropertyAnimation {
                 target: flipAngle
                 properties: "angle"
-                duration: 500
+                duration: 300
             }
         }
     ]

@@ -141,22 +141,16 @@ QImage ImageProvider::getImage(const QString& path, const QSize& size, bool full
         Q_ASSERT(false);
     }
 
-    int scaledSize = qMax(size.height(), size.width());
-
     // Calculate the new dimensions for the thumbnail. Preserve aspect ratio.
     int width = imageReader.size().width();
     int height = imageReader.size().height();
+    qDebug() << "Image orig size: (" << width << "x" << height << ")";
 
-    if (width > height) {
-        height = static_cast<double>(scaledSize) / width * height;
-        width = scaledSize;
-    } else if (width < height) {
-        width = static_cast<double>(scaledSize) / height * width;
-        height = scaledSize;
-    } else {
-        width = scaledSize;
-        height = scaledSize;
-    }
+    double scalingFactor = qMin(size.height() / static_cast<double>(height),
+                                size.width() / static_cast<double>(width));
+    width = scalingFactor * width;
+    height = scalingFactor * height;
+    qDebug() << "Scaling factor was: " << scalingFactor;
 
     // Set the correct size to which we want the image to be read. Read it.
     imageReader.setScaledSize(QSize(width, height));

@@ -94,8 +94,11 @@ Rectangle {
     ImageView {
         id: largeImage
         anchors.centerIn: parent
-        width: container.width - 80
-        height: container.height - 20
+        // Define the maximum size for the ImageView. The more accurate
+        // size will be depending on the size of the image itself (the
+        // aspect ratio of the image will be preserved).
+        maxWidth: container.width - 80
+        maxHeight: container.height - 20
         z: parent.z + 1
 
         fillMode: Image.PreserveAspectFit
