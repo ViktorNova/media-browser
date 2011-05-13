@@ -12,7 +12,7 @@ Rectangle {
         width: parent.width
         height: parent.height
 
-        wrapMode: Text.WordWrap
+        wrapMode: Text.Wrap
         text: infoText
     }
 
