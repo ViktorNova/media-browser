@@ -46,34 +46,4 @@ Rectangle {
         axis { x: 0; y: 1; z: 0 } // Rotate around y-axis.
         angle: 180
     }
-
-/*
-    states: [
-        State {
-            name: "visible"
-            PropertyChanges {
-                target: flip
-                angle: 0
-            }
-            PropertyChanges {
-                target: parent
-                visible: true
-            }
-        }
-    ]
-
-    transitions: [
-        Transition {
-            from: ""
-            to: "visible"
-            reversible: true
-
-            PropertyAnimation {
-                target: flip
-                properties: "angle"
-                duration: 200
-            }
-        }
-    ]
-*/
 }

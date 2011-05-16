@@ -1,17 +1,13 @@
 import QtQuick 1.0
 import ImageProvider 1.0 // Import the ImageProvider
 
-Rectangle {
+Item {
     id: delegateItem
     x: 0
     z: PathView.z
     width: delegateItem.height / 2
     height: container.height
     scale: PathView.iconScale
-//    color: PathView.isCurrentItem ? Qt.lighter("blue") : "blue"
-//    color: "black"
-    color: "transparent"
-    radius: 10
 
     // The coverflow item consists of two images with white borders.
     // The second image is flipped and has some opacity for nice mirror effect.
