@@ -1,10 +1,9 @@
 import QtQuick 1.0
 import QtMobility.gallery 1.1
 
-Rectangle {
+Item {
     width: 640
     height: 360
-    color: "lightsteelblue"
 
     WaitIndicator {
         id: waitIndicator

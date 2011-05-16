@@ -1,7 +1,7 @@
 import QtQuick 1.0
 import QtMobility.gallery 1.1
 
-Rectangle {
+Item {
     id: container
 
     signal currentIndexChanged(int index)

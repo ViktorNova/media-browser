@@ -25,6 +25,11 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     QmlApplicationViewer viewer;
+    // Set this attribute in order to avoid drawing the system
+    // background unnecessary.
+    // TODO: If need be to variate this between S^3 and 5.0 devices, this will
+    // need to be variated run-time (e.g. with QDeviceInfo::Version())!
+    viewer.setAttribute(Qt::WA_NoSystemBackground);
 
     // Start the ImageScaler to create the thumbs, if necessary. This will be
     // within its own thread in order to avoid blocking the UI.
