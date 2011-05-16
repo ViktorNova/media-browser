@@ -15,38 +15,50 @@
 #define THUMBS_DIR "thumbs"
 #define THUMBS_DIR_WITH_PREFIX "/" THUMBS_DIR
 
-//static const QString ThumbDirPostfix("thumbs");
+// Default image conversion path, if invalid path is given.
+#ifdef Q_OS_SYMBIAN
+    #define IMAGE_PATH "E:\\Images\\"
+#else
+    #define IMAGE_PATH "/Temp/Images/"
+#endif
 // Default length for height or width of the thumbnail.
-static const int DefaultThumbSize = 256;
+static const int DefaultThumbSize = 180;
 
-ImageScaler::ImageScaler(QObject *parent):
+
+ImageScaler::ImageScaler(const QString& path, const int thumbSize, QObject* parent):
     QObject(parent),
-    mThumbSize(0)
+    mPath(path),
+    mThumbSize(thumbSize)
 {
+    // Do some error checking for given thumbsize & conversion path.
+    if (mThumbSize <= 0) {
+        qDebug() << "ThumbSize INVALID, using default: " << DefaultThumbSize;
+        mThumbSize = DefaultThumbSize;
+    }
+    if (mPath.isEmpty()) {
+        qDebug() << "Path INVALID, using default: " << IMAGE_PATH;
+        mPath = QString(IMAGE_PATH);
+    }
+
     qDebug() << "ImageScaler object constructed!";
 }
 
 ImageScaler::~ImageScaler()
 {
-//    delete mSaveDir;
+    // Nuthin'
 }
 
-bool ImageScaler::scaleImages(const QString& path, int thumbSize)
+bool ImageScaler::scaleImages()
 {
-    // Save the thumbdimension size for use. Though do some error checing first.
-    mThumbSize = thumbSize;
-    if (mThumbSize < 0) {
-        mThumbSize = DefaultThumbSize;
-    }
 
     // Check that the directory from which to read really exists.
-    QDir imageDir(path);
+    QDir imageDir(mPath);
     if (!imageDir.exists()) {
         qDebug() << "Cannot find the imagedir (" << imageDir.absolutePath() << "). Quitting!";
         return false;
     }
 
-    qDebug() << "Requested thumb size: " << thumbSize;
+    qDebug() << "Requested thumb size: " << mThumbSize;
     qDebug() << "ImageDir " << imageDir.path();
     // Debug counting of files
     int dbgCount = 0;
