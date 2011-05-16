@@ -5,6 +5,16 @@ Rectangle {
     width: 640
     height: 360
     color: "lightsteelblue"
+    property bool loading: false
+    property bool loadingComplete: false
+
+    WaitIndicator {
+        id: waitIndicator
+        anchors.fill: parent
+        delay: 0
+        z: 120
+        show: true
+    }
 
     DocumentGalleryModel {
         id: galleryModel
@@ -13,7 +23,27 @@ Rectangle {
         properties: [ "url" ]
         limit: 10
         autoUpdate: true
-        onProgressChanged: console.log("Model progress: " + progress)
+        onProgressChanged: {
+            console.log("Model progress: " + progress)
+            // TODO: Use nice constants instead of these magic params!
+            if (!loadingComplete) {
+                if (!loading && progress == 0) {
+                    console.log("Starting image scaling process & WaitIndicator from main.qml")
+                    loading = true
+                    waitIndicator.show = true
+                    cpThumbCreator.scaleImages("E:\\Images\\", 180)
+                }
+                else if (loading && progress == 1) {
+                    console.log("Loading complete!")
+                    loading = false
+                    loadingComplete = true
+                    waitIndicator.show = false
+                }
+                else {
+                    console.log("Just wait.")
+                }
+            }
+        }
         onStatusChanged: console.log("Model status: " + status)
     }
 

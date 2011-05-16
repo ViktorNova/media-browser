@@ -12,8 +12,7 @@ Rectangle {
 
     width: 640
     height: 360
-    //color: "steelblue"
-    //color: "black"
+
     // Background image
     Image {
         id: background
@@ -111,5 +110,4 @@ Rectangle {
         PathAttribute { name: "iconScale"; value: 0.6 }
         PathPercent { value: 1.0 }
     }
-
 }

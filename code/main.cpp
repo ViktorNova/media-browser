@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     context->setContextProperty("cpThumbCreator", thumbCreator);
     // Create the thumbnails once.
     // TODO: Perhaps this should be called from withing the QML?
-    thumbCreator->scaleImages(QString(IMAGE_PATH), thumbSize);
+//    thumbCreator->scaleImages(QString(IMAGE_PATH), thumbSize);
 
 #if defined(Q_WS_MAEMO_5)
     viewer.addImportPath(QString("/opt/qtm11/imports"));
