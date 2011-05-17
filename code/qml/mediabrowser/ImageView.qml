@@ -95,8 +95,6 @@ Item {
         width: parent.width
         // Only show the infoview when the image has been "flipped"
         visible: flipAngle.angle > 90 ? true : false
-        // Provide some information about the image, like the path to the file
-        infoText: imagePath
         // Return back to visible state
         onClosed: parent.state = "visible"
     }

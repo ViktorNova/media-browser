@@ -1,19 +1,74 @@
 import QtQuick 1.0
 
+// Provides some information about the image, like the path to the file &
+// date taken & camera model etc.
 Rectangle {
     width: 340
     height: 340
     color: "gray"
 
-    property string infoText: "image.jpg"
     signal closed()
 
     Text {
-        width: parent.width
-        height: parent.height
+        id: fileInfo
+
+        width: parent.width - 20
+        anchors {
+            top: parent.top
+            topMargin: 10
+            left: parent.left
+            leftMargin: 10
+        }
 
         wrapMode: Text.Wrap
-        text: infoText
+        text: filePath
+    }
+
+    Text {
+        id: sizeInfo
+
+        width: parent.width - 20
+        anchors {
+            top: fileInfo.bottom
+            topMargin: 5
+            left: parent.left
+            leftMargin: 10
+        }
+
+        wrapMode: Text.Wrap
+        text: "Shown in size: " + parent.width + "x" + parent.height
+    }
+
+    Text {
+        id: takenInfo
+        visible: dateTaken == "Invalid Date" ? false : true
+
+        width: parent.width - 20
+        anchors {
+            top: sizeInfo.bottom
+            topMargin: 5
+            left: parent.left
+            leftMargin: 10
+        }
+
+        wrapMode: Text.Wrap
+        text: "Picture taken on: " + dateTaken
+    }
+
+    Text {
+        id: cameraInfo
+
+        visible: cameraModel == "" ? false : true
+        width: parent.width - 20
+        anchors {
+            top: takenInfo.bottom
+            topMargin: 5
+            left: parent.left
+            leftMargin: 10
+        }
+
+        wrapMode: Text.Wrap
+        text: "Camera model: " + cameraModel
     }
 
     Button {

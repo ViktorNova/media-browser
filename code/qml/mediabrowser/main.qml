@@ -17,7 +17,8 @@ Item {
         id: galleryModel
         rootType: DocumentGallery.Image
         scope: DocumentGallery.Image
-        properties: [ "url" ]
+        // Properties, that will be shown on image info card (InfoView)
+        properties: [ "url", "filePath", "dateTaken", "cameraModel" ]
         limit: 10
         autoUpdate: true
         onProgressChanged: {
