@@ -19,6 +19,11 @@ HEADERS += imagescaler.h\
 
 CONFIG += shared
 
+# This removes extra logging from release builds
+release {
+    DEFINES += QT_NO_DEBUG_OUTPUT
+}
+
 symbian {
     # Symbian specific definitions
     MMP_RULES += EXPORTUNFROZEN

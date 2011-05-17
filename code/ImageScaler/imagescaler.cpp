@@ -11,6 +11,10 @@
 // Class declaration
 #include "imagescaler.h"
 
+#ifdef QT_NO_DEBUG_OUTPUT
+    #warning "NO DEBUG INFO WILL BE PRINTED!"
+#endif
+
 // Constants
 #define THUMBS_DIR "thumbs"
 #define THUMBS_DIR_WITH_PREFIX "/" THUMBS_DIR

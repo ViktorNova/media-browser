@@ -11,6 +11,9 @@
 #define FULL_IMAGE_FILE_PREFIX "full/" FILE_PREFIX
 #define REFLECTION_FILE_PREFIX "reflection/" FILE_PREFIX
 
+#ifdef QT_NO_DEBUG_OUTPUT
+    #warning "NO DEBUG INFO WILL BE PRINTED!"
+#endif
 
 ImageProvider::ImageProvider():
         //QDeclarativeImageProvider(QDeclarativeImageProvider::Pixmap)  // Synchronous loading!
@@ -83,7 +86,7 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
         } else {
             // The provided uri was of wrong type!
             qDebug() << "The given uri (" << id << ") was incorrect! Panic!";
-            Q_ASSERT(false);
+            // Q_ASSERT(false);
             return img;
         }
 

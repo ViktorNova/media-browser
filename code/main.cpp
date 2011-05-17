@@ -15,6 +15,10 @@ static const int thumbSize = 180;
     #define IMAGE_PATH "/Temp/Images/"
 #endif
 
+#ifdef QT_NO_DEBUG_OUTPUT
+    #warning "NO DEBUG INFO WILL BE PRINTED!"
+#endif
+
 // Trying to get the plugin working..
 // NOTE: Doesn't work this way, yet at least.
 //Q_IMPORT_PLUGIN(qmlimageproviderplugin)

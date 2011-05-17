@@ -7,6 +7,11 @@ DEPLOYMENTFOLDERS = folder_01
 #QML_IMPORT_PATH = /opt/qtm11/imports
 #QTPLUGIN += qmlimageproviderplugin
 
+# This removes extra logging from release builds
+release {
+    DEFINES += QT_NO_DEBUG_OUTPUT
+}
+
 symbian {
     TARGET.UID3 = 0xE487F346
     # Allow network access on Symbian

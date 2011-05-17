@@ -38,6 +38,10 @@ unix:!symbian {
 
 INSTALLS += imgprovider_sources target
 
+# This removes extra logging from release builds
+release {
+    DEFINES += QT_NO_DEBUG_OUTPUT
+}
 
 symbian {
     # Symbian specific definitions
