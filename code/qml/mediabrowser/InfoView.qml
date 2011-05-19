@@ -2,17 +2,25 @@ import QtQuick 1.0
 
 // Provides some information about the image, like the path to the file &
 // date taken & camera model etc.
-Rectangle {
+Item {
     width: 340
     height: 340
-    color: "gray"
 
     signal closed()
+    property int textMaxWidth: width - 10
+
+    Image {
+        // Tiled "MediaBrowser" -photo background would be nice, but it
+        // doesn't rotate with 3D-transformations for some reason :-/
+//        fillMode: Image.Tile
+        anchors.fill: parent
+        source: "gfx/photo_back.png"
+    }
 
     Text {
         id: fileInfo
 
-        width: parent.width - 20
+        width: textMaxWidth
         anchors {
             top: parent.top
             topMargin: 10
@@ -27,7 +35,7 @@ Rectangle {
     Text {
         id: sizeInfo
 
-        width: parent.width - 20
+        width: textMaxWidth
         anchors {
             top: fileInfo.bottom
             topMargin: 5
@@ -43,7 +51,7 @@ Rectangle {
         id: takenInfo
         visible: dateTaken == "Invalid Date" ? false : true
 
-        width: parent.width - 20
+        width: textMaxWidth
         anchors {
             top: sizeInfo.bottom
             topMargin: 5
@@ -59,7 +67,7 @@ Rectangle {
         id: cameraInfo
 
         visible: cameraModel == "" ? false : true
-        width: parent.width - 20
+        width: textMaxWidth
         anchors {
             top: takenInfo.bottom
             topMargin: 5
