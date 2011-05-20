@@ -14,7 +14,16 @@ Item {
 
     property string imagePath: ""
     property int fillMode: Image.PreserveAspectFit
+
     signal closed();
+
+    // "Closes" (hides) the ImageView and signals that the ImageView
+    // has been hidden.
+    function close() {
+        console.log("ImageView::close()")
+        imageView.state = "";
+        imageView.closed();
+    }
 
     opacity: 0
 
@@ -36,7 +45,21 @@ Item {
     }
 
     MouseArea {
-        id: mouseArea
+        // A full screen mousearea to capture clicks outside the image. If
+        // clicked outside, then close the ImageView.
+        x: -200
+        y: -200
+        width: 840
+        height: 560
+        onClicked: {
+            console.log("Full screen mousearea clicked. Closing ImageView.")
+            imageView.close()
+        }
+    }
+
+    MouseArea {
+        // This one will prevent the touch events to close the image if clicked
+        // on the image itself.
         anchors.fill: parent
         onClicked: {
             console.log("capturing touch events on imageView")
@@ -60,9 +83,7 @@ Item {
 
         onClicked: {
             console.log("zoomButton onClicked");
-            parent.state == "visible" ?
-                        parent.state = "" : parent.state = "visible"
-            imageView.closed()
+            imageView.close();
         }
     }
 
@@ -84,7 +105,7 @@ Item {
 
         onClicked: {
             console.log("infoButton clicked");
-            parent.state = "info"
+            parent.state = "info";
         }
     }
 

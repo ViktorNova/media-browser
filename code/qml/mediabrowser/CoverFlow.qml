@@ -4,14 +4,21 @@ import QtMobility.gallery 1.1
 Item {
     id: container
 
-    signal currentIndexChanged(int index)
+    width: 640
+    height: 360
 
     property DocumentGalleryModel model
     property int topMargin: 80
     property int bottomMargin: 80
 
-    width: 640
-    height: 360
+    signal currentIndexChanged(int index)
+
+    function resetCurrent() {
+        // This is a bit ugly, but the "current item" from the pathview
+        // can be found from index itemCount (7), and hide() -function will
+        // be called to make sure there's no big ImageView open when moving.
+        pathView.children[pathView.itemCount].reset();
+    }
 
     // Background image
     Image {
@@ -29,7 +36,7 @@ Item {
 
     PathView {
         id: pathView
-        property bool still: true
+        property int itemCount: 7
 
         model: container.model
         delegate: CoverFlowDelegate {}
@@ -39,16 +46,15 @@ Item {
         preferredHighlightEnd: 0.5
         focus: true
         interactive: true
-        pathItemCount: 7
+        pathItemCount: itemCount
         //pathItemCount: 9  // Works also with 9 items, just slows down a bit.
 
         onMovementStarted: {
-            pathView.still = false;
-            console.log("PathView movement started")
+            // When the movement starts, hide the ImageView (if visible)
+            container.resetCurrent();
         }
 
         onMovementEnded: {
-            pathView.still = true;
             console.log("PathView movement ended")
         }
 

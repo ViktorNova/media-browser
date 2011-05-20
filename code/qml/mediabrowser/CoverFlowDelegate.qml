@@ -9,6 +9,16 @@ Item {
     height: container.height
     scale: PathView.iconScale
 
+    // Resets the CoverFlow delegate (and it's children i.e. ImageView) to the
+    // original state. That is, showing just the thumbnail on the path.
+    function reset() {
+        console.log("Hiding the largeImage and returning to orig state");
+        if (largeImage.state == "visible" || largeImage.state == "info") {
+            console.log("LargeImage visible! Closing...");
+            largeImage.close();
+        }
+    }
+
     // The coverflow item consists of two images with white borders.
     // The second image is flipped and has some opacity for nice mirror effect.
     Column  {
