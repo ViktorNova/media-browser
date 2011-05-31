@@ -15,7 +15,7 @@ Item {
 
     function resetCurrent() {
         // This is a bit ugly, but the "current item" from the pathview
-        // can be found from index itemCount (7), and hide() -function will
+        // can be found from index itemCount (7), and reset() -function will
         // be called to make sure there's no big ImageView open when moving.
         pathView.children[pathView.itemCount].reset();
     }
@@ -83,7 +83,7 @@ Item {
         id: coverFlowPath
 
         // "Start zone"
-        startX: 0
+        startX: -25
         startY: coverFlow.height / 2
         PathAttribute { name: "z"; value: 0 }
         PathAttribute { name: "angle"; value: 70 }
@@ -110,7 +110,7 @@ Item {
         PathPercent { value: 0.60 }
 
         // Final stop
-        PathLine { x: coverFlow.width; y: coverFlow.height / 2; }
+        PathLine { x: coverFlow.width + 25; y: coverFlow.height / 2; }
         PathAttribute { name: "z"; value: 0 }
         PathAttribute { name: "angle"; value: -70 }
         PathAttribute { name: "iconScale"; value: 0.6 }
