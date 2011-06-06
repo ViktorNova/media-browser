@@ -2,22 +2,26 @@ import QtQuick 1.0
 import QtMobility.gallery 1.1
 
 Item {
-    id: container
+    id: coverFlow
 
     width: 640
     height: 360
 
     property DocumentGalleryModel model
+    // Defines, how many items will be shown on the pathview concurrently.
+    // Works also with 9 items, just slows down a bit.
+    property int itemCount: 7
+    // Defines, where the CoverFlowDelegate will be positioned on the Y-axis
     property int topMargin: 80
-    property int bottomMargin: 80
 
+    // Signalled when the current index changes on the PathView.
     signal currentIndexChanged(int index)
 
     function resetCurrent() {
         // This is a bit ugly, but the "current item" from the pathview
         // can be found from index itemCount (7), and reset() -function will
         // be called to make sure there's no big ImageView open when moving.
-        pathView.children[pathView.itemCount].reset();
+        pathView.children[coverFlow.itemCount].reset();
     }
 
     // Background image
@@ -36,22 +40,20 @@ Item {
 
     PathView {
         id: pathView
-        property int itemCount: 7
 
-        model: container.model
+        model: coverFlow.model
         delegate: CoverFlowDelegate {}
-        anchors.fill: parent
         path: coverFlowPath
+        pathItemCount: coverFlow.itemCount
+
+        anchors.fill: parent
         preferredHighlightBegin: 0.5
         preferredHighlightEnd: 0.5
         focus: true
-        interactive: true
-        pathItemCount: itemCount
-        //pathItemCount: 9  // Works also with 9 items, just slows down a bit.
 
         onMovementStarted: {
             // When the movement starts, hide the ImageView (if visible)
-            container.resetCurrent();
+            coverFlow.resetCurrent();
         }
 
         onMovementEnded: {
@@ -59,19 +61,19 @@ Item {
         }
 
         Keys.onRightPressed: {
-            if (interactive) { // && !moving) {
+            if (interactive) {
                 incrementCurrentIndex()
             }
         }
 
         Keys.onLeftPressed: {
-            if (interactive) { // && !moving) {
+            if (interactive) {
                 decrementCurrentIndex()
             }
         }
 
         onCurrentIndexChanged: {
-            container.currentIndexChanged(pathView.currentIndex);
+            coverFlow.currentIndexChanged(pathView.currentIndex);
         }
     }
 

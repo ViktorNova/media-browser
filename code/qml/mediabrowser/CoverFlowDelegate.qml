@@ -5,8 +5,8 @@ Item {
     id: delegateItem
     x: 0
     z: PathView.z
-    width: delegateItem.height / 2
-    height: container.height
+    width: height / 2
+    height: parent.height
     scale: PathView.iconScale
 
     // Resets the CoverFlow delegate (and it's children i.e. ImageView) to the
@@ -23,12 +23,14 @@ Item {
     // The second image is flipped and has some opacity for nice mirror effect.
     Column  {
         id: delegate
-        y: container.topMargin
+        y: coverFlow.topMargin
         spacing: 5
 
         // White borders around the image
         Rectangle {
             id: delegateImage
+
+            // The rectangle is a square.
             width: delegateItem.width
             height: delegateImage.width
             color: dlgImg.status == Image.Ready ? "white" : "transparent"
@@ -39,8 +41,8 @@ Item {
             Image {
                 id: dlgImg
 
-                width: delegateItem.width - 8
-                height: delegateImage.width - 8
+                width: delegateImage.width - 8
+                height: delegateImage.height - 8
                 anchors.centerIn: parent
 
                 // Only set sourceSize.width or height to maintain aspect ratio.
@@ -63,13 +65,13 @@ Item {
         // Reflection
         Item {
             width: delegateImage.width
-            height: delegateImage.width
+            height: delegateImage.height
 
             Image {
                 id: reflection
 
                 width: delegateImage.width
-                height: delegateImage.width
+                height: delegateImage.height
                 anchors.centerIn: parent
                 sourceSize.width: delegateImage.width
                 sourceSize.height: delegateImage.height
@@ -103,8 +105,8 @@ Item {
         // Define the maximum size for the ImageView. The more accurate
         // size will be depending on the size of the image itself (the
         // aspect ratio of the image will be preserved).
-        maxWidth: container.width - 80
-        maxHeight: container.height - 20
+        maxWidth: coverFlow.width - 80
+        maxHeight: coverFlow.height - 20
         z: parent.z + 1
 
         fillMode: Image.PreserveAspectFit
@@ -121,8 +123,7 @@ Item {
             if (pathView.currentIndex == index) {
                 console.log("Clicked on current item, zoom it")
 
-                parent.state == "scaled" ?
-                    parent.state = "" : parent.state = "scaled"
+                parent.state == "scaled" ? parent.state = "" : parent.state = "scaled"
 
                 // Switch to the ImageView
                 largeImage.imagePath = url
@@ -149,7 +150,6 @@ Item {
             name: "scaled"
             PropertyChanges {
                 target: delegateImage
-                clip: false
                 // Scale up the icon
                 scale: 1.8
             }
