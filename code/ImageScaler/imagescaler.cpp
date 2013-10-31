@@ -1,15 +1,20 @@
+/**
+ * Copyright (c) 2012 Nokia Corporation.
+ */
+
+// Class declaration
+#include "imagescaler.h"
+
 // Qt includes
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
 #include <QtCore/QFileInfoList>
-
 #include <QtGui/QImage>
 #include <QtGui/QImageReader>
 
-// Class declaration
-#include "imagescaler.h"
+#include <QGalleryResultSet>
 
 #ifdef QT_NO_DEBUG_OUTPUT
     #warning "NO DEBUG INFO WILL BE PRINTED!"
@@ -19,102 +24,94 @@
 #define THUMBS_DIR "thumbs"
 #define THUMBS_DIR_WITH_PREFIX "/" THUMBS_DIR
 
-// Default image conversion path, if invalid path is given.
-#ifdef Q_OS_SYMBIAN
-    #define IMAGE_PATH "E:\\Images\\"
-#else
-    #define IMAGE_PATH "/Temp/Images/"
-#endif
 // Default length for height or width of the thumbnail.
-static const int DefaultThumbSize = 180;
+static const int DefaultThumbSize = 240;
 
+/*!
+  \class ImageScaler
+  \brief This class walks through all the image files (gotten from the
+         QDocumentGallery) and scales them down to a square thumbnail.
+         This is done once during startup. Also, a separate thread is
+         reserved for the ImageScaler, as it would otherwise lock the UI
+         during startup for some time.
+*/
 
-ImageScaler::ImageScaler(const QString& path, const int thumbSize, QObject* parent):
+/*!
+  Constructs the ImageScaler. The path and thumbSize HAVE TO BE given.
+  @param thumbSize The maximum length that the longer dimension (width/height) will receive.
+*/
+ImageScaler::ImageScaler(const int thumbSize, QObject* parent):
     QObject(parent),
-    mPath(path),
-    mThumbSize(thumbSize)
+    mThumbSize(thumbSize),
+    m_documentGallery(0),
+    m_galleryQuery(0)
 {
     // Do some error checking for given thumbsize & conversion path.
     if (mThumbSize <= 0) {
         qDebug() << "ThumbSize INVALID, using default: " << DefaultThumbSize;
         mThumbSize = DefaultThumbSize;
     }
-    if (mPath.isEmpty()) {
-        qDebug() << "Path INVALID, using default: " << IMAGE_PATH;
-        mPath = QString(IMAGE_PATH);
-    }
-
-    qDebug() << "ImageScaler object constructed!";
 }
 
+/*!
+  Destructor.
+*/
 ImageScaler::~ImageScaler()
 {
-    // Nuthin'
+    delete m_documentGallery;
+    delete m_galleryQuery;
+    m_documentGallery = 0;
+    m_galleryQuery = 0;
 }
 
+/*!
+  Slot that starts initialization of the Document Gallery queries.
+*/
+void ImageScaler::init()
+{
+    m_documentGallery = new QDocumentGallery(this);
+    m_galleryQuery = new QGalleryQueryRequest(m_documentGallery, this);
+    connect(m_galleryQuery, SIGNAL(finished()),
+            this, SLOT(requestFinished()));
+    connect(m_galleryQuery, SIGNAL(error(int,QString)),
+            this, SLOT(requestError()));
+
+    qDebug() << "ImageScaler object constructed & initialized!";
+}
+
+/*!
+  Method to convert the images to thumbs in the specified folder.
+  Scales the images within the given path to thumbnails into "/thumbs" subfolder.
+*/
 bool ImageScaler::scaleImages()
 {
-
-    // Check that the directory from which to read really exists.
-    QDir imageDir(mPath);
-    if (!imageDir.exists()) {
-        qDebug() << "Cannot find the imagedir (" << imageDir.absolutePath() << "). Quitting!";
-        return false;
+    if (m_documentGallery == 0) {
+        init();
     }
 
-    qDebug() << "Requested thumb size: " << mThumbSize;
-    qDebug() << "ImageDir " << imageDir.path();
-    // Debug counting of files
-    int dbgCount = 0;
-
-    // Iterate through all the files also in the subfolders
-    QDirIterator dirIter(imageDir, QDirIterator::Subdirectories);
-    while (dirIter.hasNext()) {
-        // Uncomment, if you would like to see the contents of the dir
-        qDebug() << dirIter.filePath();
-
-        // Fetch the QFileInfo from the current dir iterator
-        QFileInfo info = dirIter.fileInfo();
-
-        // Convert the image to a thumbnail, if it is a file and the folder
-        // in which the file exists isn't a /thumbs -folder!
-        if (info.isFile() && info.filePath().indexOf(THUMBS_DIR_WITH_PREFIX) < 0) {
-            // Convert to thumbnail
-            convertToThumb(info);
-            dbgCount++;
-        }
-        else {
-            // item was either a folder itself or a file which was in
-            // a thumbs folder. Just debug print here.
-            qDebug() << "Skipped " << dirIter.filePath();
-        }
-
-        // Move the iterator forward
-        dirIter.next();
-    }
-
-    // DEBUG PRINT! Uncomment, if not needed.
-    qDebug() << "Count of converted files: " << dbgCount;
-
+    fetchImageResults();
     return true;
 }
 
+/*!
+  Worker method, checks if the thumb does not exist and starts saving to file.
+*/
 bool ImageScaler::convertToThumb(const QFileInfo& info)
 {
     bool retVal = false;
 
-    // Create the "/thumbs" subfolder, if not already exist!
-    QDir saveDir(info.path()+ THUMBS_DIR_WITH_PREFIX);
+    // The thumbnails are saved under a hidden folder in order
+    // to avoid showing the thumbnails in the Media Gallery.
+    const QString privatePath("/home/user/.mediabrowser/thumbs");
+    QDir saveDir(privatePath + info.path());
+
     if (!saveDir.exists()) {
-        qDebug() << "Creating thumbs folder!";
-        QDir topDir(info.path());
-        if (!topDir.mkdir(THUMBS_DIR)) {
+        if (!saveDir.mkpath(saveDir.path())) {
             qDebug() << "Thumbs folder creation failed. Quitting!";
             return false;
         }
     }
-
-    // TODO: Maybe use some DB solution to save the information?
+    // Create the thumb file path to the private save folder.
     QString saveName = saveDir.path() + "/" + info.fileName();
 
     // Check if the file already exists
@@ -128,41 +125,106 @@ bool ImageScaler::convertToThumb(const QFileInfo& info)
     return retVal;
 }
 
+/*!
+  Worker method, that does the actual image conversion & saving to file.
+*/
 bool ImageScaler::saveImage(const QFileInfo& info, const QString& saveName)
 {
     bool retVal = false;
     // Create the image reader to handle the downscaling of the image
     QImageReader imageReader(info.filePath());
-    if (!imageReader.canRead()) {
-        qDebug() << "ERROR: ImageReader cannot read file from: " << info.filePath() << "!";
-        return retVal;
-    }
 
-    // Calculate the new dimensions for the thumbnail. Preserve aspect ratio.
-    int width = imageReader.size().width();
-    int height = imageReader.size().height();
+    if (imageReader.canRead()) {
+        // Calculate the new dimensions for the thumbnail. Preserve aspect ratio.
+        QSize imgReaderSize = imageReader.size();
+        int width = imgReaderSize.width();
+        int height = imgReaderSize.height();
 
-    if (width > height) {
-        height = static_cast<double>(mThumbSize) / width * height;
-        width = mThumbSize;
-    } else if (width < height) {
-        width = static_cast<double>(mThumbSize) / height * width;
-        height = mThumbSize;
+        if (width > height) {
+            width = width * mThumbSize / static_cast<double>(height);
+            height = mThumbSize;
+        } else if (width < height) {
+            height = height * mThumbSize / static_cast<double>(width);
+            width = mThumbSize;
+        } else {
+            width = mThumbSize;
+            height = mThumbSize;
+        }
+        QPoint topLeft;
+
+        if (width > height) {
+            topLeft = QPoint(width/2-mThumbSize/2, 0);
+        } else {
+            topLeft = QPoint(0, height/2-mThumbSize/2);
+        }
+        // Set the correct size to which we want the image to be read. Read it.
+        imageReader.setScaledSize(QSize(width, height));
+        QRect scaledClipRect(topLeft, QSize(mThumbSize, mThumbSize));
+        imageReader.setScaledClipRect(scaledClipRect);
+        QImage thumbnail = imageReader.read();
+        // Convert & save the image to disk right away!
+        retVal = thumbnail.save(saveName);
+
+        qDebug() << "Image: " << info.fileName() << " saved to " << saveName
+                 << ", with scaled size:" << imageReader.scaledSize().width() << "x"
+                 << imageReader.scaledSize().height()
+                 << "and with scaledClipRect:" << scaledClipRect
+                 << ", img.save()'s retVal was: " << retVal << "!";
     } else {
-        width = mThumbSize;
-        height = mThumbSize;
+        qDebug() << "ERROR: ImageReader cannot read file from: " << info.filePath() << "!";
     }
-
-    // Set the correct size to which we want the image to be read. Read it.
-    imageReader.setScaledSize(QSize(width, height));
-    QImage thumbnail = imageReader.read();
-    // Save the image to disk right away
-    retVal = thumbnail.save(saveName);
-
-    qDebug() << "Image: " << info.fileName() << " saved to " << saveName
-             << ", img.save()'s retVal was: " << retVal << "!";
 
     return retVal;
 }
 
+/*!
+  Method for starting the Document Gallery query.
+*/
+void ImageScaler::fetchImageResults()
+{
+    if (!m_galleryQuery->isSupported()) {
+        qDebug() << "Request not supported";
+        return;
+    }
+    m_galleryQuery->setRootType(QDocumentGallery::Image);
+    m_galleryQuery->execute();
+}
+
+/*!
+  Slot, that's being called when the QGalleryQueryRequest finishes.
+*/
+void ImageScaler::requestFinished()
+{
+    qDebug() << "ImageScaler::requestFinished";
+
+    QGalleryResultSet *resultSet = m_galleryQuery->resultSet();
+    qDebug() << "Nbr. of results: " << resultSet->itemCount();
+
+    int dbgCount = 0;
+    resultSet->fetchFirst();
+
+    for (int i=0; i < resultSet->itemCount(); i++) {
+        QFileInfo fileInfo(resultSet->itemUrl().toLocalFile());
+
+        if (fileInfo.isFile() &&
+                fileInfo.filePath().indexOf(THUMBS_DIR_WITH_PREFIX) < 0) {
+            convertToThumb(fileInfo);
+            dbgCount++;
+        } else {
+            qDebug() << "Skipped " << resultSet->itemUrl().toLocalFile();
+        }
+        resultSet->fetchNext();
+    }
+    qDebug() << "Count of converted files: " << dbgCount;
+    emit scalingDone();
+}
+
+/*!
+  Slot, that's being called when the QGalleryQueryRequest finishes with error.
+*/
+void ImageScaler::requestError()
+{
+    qDebug() << "ImageScaler::requestError";
+    emit scalingDone();
+}
 // End of file

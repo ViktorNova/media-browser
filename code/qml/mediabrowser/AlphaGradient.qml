@@ -1,4 +1,8 @@
-import QtQuick 1.0
+/**
+ * Copyright (c) 2012 Nokia Corporation.
+ */
+
+import QtQuick 1.1
 
 Rectangle {
     // Added +2 to dimensions in order to hinder the tearing effect.

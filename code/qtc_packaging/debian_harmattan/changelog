@@ -1,0 +1,28 @@
+mediabrowser (2.0.0) unstable; urgency=low
+  * More fixes & improvements. Published on the Nokia Developer website.
+
+ -- unknown <>  Fri, 16 Mar 2012 12:07:04 +0200
+
+
+mediabrowser (1.4.0) unstable; urgency=low
+  * Code cleanup changes, more performance improvements.
+
+ -- unknown <>  Thu, 08 Mar 2012 16:52:34 +0200
+
+
+mediabrowser (1.3.0) unstable; urgency=low
+  * Performance improvements, better VideoPlayer module integration.
+
+ -- unknown <>  Wed, 07 Mar 2012 13:23:44 +0200
+
+
+mediabrowser (1.1.0) unstable; urgency=low
+  * Initial release supporting MeeGo/Harmattan platforms.
+
+ -- unknown <>  Wed, 25 Jan 2012 14:20:40 +0200
+
+
+mediabrowser (1.0.0) unstable; urgency=low
+  * Initial Release.
+
+ -- unknown <>  Wed, 25 Jan 2012 14:20:38 +0200

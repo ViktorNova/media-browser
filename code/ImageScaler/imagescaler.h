@@ -1,45 +1,48 @@
+/**
+ * Copyright (c) 2012 Nokia Corporation.
+ */
+
 #ifndef IMAGESCALER_H
 #define IMAGESCALER_H
 
 #include <QtCore/QObject>
+#include <QDocumentGallery>
+#include <QGalleryQueryRequest>
 
-#include "ImageScaler_global.h"
-
-// Forward declarations
 class QFileInfo;
 class QImage;
 
-class IMAGESCALERSHARED_EXPORT ImageScaler: public QObject
+QTM_USE_NAMESPACE
+
+class ImageScaler: public QObject
 {
     Q_OBJECT
 
 public:
-    /*!
-     * Constructs the ImageScaler. The path and thumbSize HAVE TO BE given.
-     * @param path Path to the folder in which the images should be converted to thumbnails.
-     * @param thumbSize The maximum length that the longer dimension (width/height) will receive.
-     */
-    ImageScaler(const QString& path, const int thumbSize, QObject* parent = 0);
+    ImageScaler(const int thumbSize, QObject* parent = 0);
     virtual ~ImageScaler();
 
 public slots:
-
-
-    /*!
-     * Method to convert the images to thumbs in the specified folder.
-     * Scales the images within the given path to thumbnails into "/thumbs" subfolder.
-     */
+    void init();
     bool scaleImages();
 
-private:
+signals:
+    void scalingDone();
 
-    // Worker methods, that do the actual conversion & saving
+private slots:
+    void requestFinished();
+    void requestError();
+
+private: // Methods
     bool convertToThumb(const QFileInfo& info);
     bool saveImage(const QFileInfo& info, const QString& saveName);
+    void fetchImageResults();
 
 private: // Data
-    QString mPath;
     int mThumbSize;
+
+    QDocumentGallery *m_documentGallery;    // Owned
+    QGalleryQueryRequest* m_galleryQuery;   // Owned
 };
 
 #endif // IMAGESCALER_H

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ImageProvider/gfx/fade_alpha_mask.png</file>
+        <file>ImageProvider/gfx/FilmReel.png</file>
+        <file>ImageProvider/gfx/mediabrowser_video_tn_landscape.png</file>
+        <file>ImageProvider/gfx/mediabrowser_video_tn.png</file>
+    </qresource>
+</RCC>
